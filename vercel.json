@@ -1,4 +1,5 @@
 {
+  "version": 2,
   "builds": [
     {
       "src": "drishti_coaching/wsgi.py",
@@ -6,13 +7,6 @@
       "config": {
         "maxLambdaSize": "50mb",
         "runtime": "python3.12"
-      }
-    },
-    {
-      "src": "build_files.sh",
-      "use": "@vercel/static-build",
-      "config": {
-        "distDir": "staticfiles"
       }
     }
   ],
