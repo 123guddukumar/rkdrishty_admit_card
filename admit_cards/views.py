@@ -117,6 +117,22 @@ def bulk_zip_worker(task_id):
 # --- Admin Dashboard Controllers ---
 
 def dashboard(request):
+    # DIAGNOSTIC: Show what environment variables Django is reading on Vercel
+    import os
+    from django.http import JsonResponse
+    from django.conf import settings
+    return JsonResponse({
+        "info": "Diagnostic database connection settings",
+        "env_db_host": os.environ.get("DB_HOST", "NOT_FOUND"),
+        "env_db_port": os.environ.get("DB_PORT", "NOT_FOUND"),
+        "env_db_user": os.environ.get("DB_USER", "NOT_FOUND"),
+        "settings_db_host": settings.DATABASES['default'].get('HOST'),
+        "settings_db_user": settings.DATABASES['default'].get('USER'),
+        "settings_db_port": settings.DATABASES['default'].get('PORT'),
+        "settings_db_name": settings.DATABASES['default'].get('NAME'),
+        "password_length": len(os.environ.get("DB_PASSWORD", "")),
+    })
+
     # Statistics
     total_students = Student.objects.count()
     generated_count = Student.objects.filter(is_generated=True).count()
