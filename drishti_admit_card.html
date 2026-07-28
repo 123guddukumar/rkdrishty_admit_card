@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Drishti Admit Card – Data Filler</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@700;800&display=swap" rel="stylesheet"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{
+      font-family:'Inter',sans-serif;
+      background:linear-gradient(135deg,#0a1628,#1a2a4a);
+      min-height:100vh; padding:20px 14px; color:#fff;
+    }
+    h1{
+      text-align:center; font-family:'Poppins',sans-serif;
+      font-size:1.6rem; font-weight:800; margin-bottom:5px;
+      background:linear-gradient(90deg,#f0c040,#fff 50%,#f0c040);
+      -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+    }
+    .sub{text-align:center;color:#aac4ff;font-size:0.78rem;margin-bottom:18px;}
+
+    .wrap{
+      display:grid; grid-template-columns:310px 1fr;
+      gap:16px; max-width:1340px; margin:0 auto; align-items:start;
+    }
+
+    /* ─── FORM PANEL ─── */
+    .fp{
+      background:rgba(255,255,255,0.06); backdrop-filter:blur(12px);
+      border:1px solid rgba(255,255,255,0.11); border-radius:14px;
+      padding:18px 16px; position:sticky; top:16px; max-height:95vh; overflow-y:auto;
+    }
+    .fp::-webkit-scrollbar{width:4px} .fp::-webkit-scrollbar-thumb{background:rgba(255,255,255,.2);border-radius:2px}
+    .fp h2{font-size:.88rem;font-weight:700;color:#f0c040;margin-bottom:12px;}
+    .step-title{font-size:.68rem;font-weight:700;color:#f0c040;text-transform:uppercase;letter-spacing:.5px;margin:10px 0 5px;border-top:1px solid rgba(255,255,255,.08);padding-top:8px;}
+    .step-title:first-of-type{border-top:none;padding-top:0;margin-top:0;}
+
+    /* upload boxes */
+    .upbox{
+      border:2px dashed rgba(240,192,64,.45); border-radius:9px;
+      padding:12px; text-align:center; cursor:pointer;
+      background:rgba(240,192,64,.03); position:relative;
+      transition:all .2s; margin-bottom:3px;
+    }
+    .upbox:hover{border-color:#f0c040;background:rgba(240,192,64,.07);}
+    .upbox input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;}
+    .upbox .uico{font-size:1.5rem;margin-bottom:3px;}
+    .upbox p{font-size:.69rem;color:#aac4ff;}
+    .upbox .ok{color:#25a244;font-size:.72rem;font-weight:700;margin-top:2px;}
+
+    /* form inputs */
+    .fg{margin-bottom:9px;}
+    .fg label{display:block;font-size:.67rem;font-weight:600;color:#aac4ff;margin-bottom:3px;text-transform:uppercase;letter-spacing:.4px;}
+    .fg input[type=text],.fg input[type=date]{
+      width:100%; background:rgba(255,255,255,.07);
+      border:1px solid rgba(255,255,255,.14); border-radius:7px;
+      padding:7px 10px; color:#fff; font-size:.8rem;
+      font-family:'Inter',sans-serif; outline:none; transition:border .2s;
+    }
+    .fg input:focus{border-color:#f0c040;background:rgba(240,192,64,.06);}
+    .fg input::placeholder{color:rgba(255,255,255,.25);}
+    .gr{display:flex;gap:14px;margin-top:3px;}
+    .go{display:flex;align-items:center;gap:4px;cursor:pointer;font-size:.8rem;color:#ccc;}
+    .go input{accent-color:#f0c040;width:13px;height:13px;}
+
+    /* font size control */
+    .fs-row{display:flex;align-items:center;gap:8px;margin-bottom:3px;}
+    .fs-row label{font-size:.67rem;color:#aac4ff;white-space:nowrap;}
+    .fs-row input[type=range]{flex:1;accent-color:#f0c040;}
+    .fs-row span{font-size:.72rem;color:#f0c040;font-weight:700;min-width:22px;}
+
+    /* buttons */
+    .btns{display:flex;flex-direction:column;gap:7px;margin-top:12px;}
+    .btn{
+      width:100%;padding:10px;border:none;border-radius:9px;
+      font-family:'Poppins',sans-serif;font-size:.83rem;font-weight:700;
+      cursor:pointer;transition:all .2s;
+    }
+    .bg{background:linear-gradient(135deg,#f0c040,#d4a017);color:#0a1628;}
+    .bg:hover{transform:translateY(-1px);box-shadow:0 5px 16px rgba(240,192,64,.35);}
+    .bv{background:linear-gradient(135deg,#1a7a32,#25a244);color:#fff;}
+    .bv:hover{transform:translateY(-1px);box-shadow:0 5px 16px rgba(37,162,68,.35);}
+    .bv:disabled{opacity:.4;cursor:not-allowed;transform:none;box-shadow:none;}
+    .br{background:rgba(255,255,255,.08);color:#ccc;font-size:.75rem;}
+    .br:hover{background:rgba(255,255,255,.12);}
+
+    /* hint box */
+    .hint{
+      background:rgba(240,192,64,.08); border:1px solid rgba(240,192,64,.2);
+      border-radius:7px; padding:8px 10px; font-size:.67rem; color:#e0c060;
+      margin-top:8px; line-height:1.5;
+    }
+
+    /* ─── PREVIEW PANEL ─── */
+    .pp{
+      background:rgba(255,255,255,.03);
+      border:1px solid rgba(255,255,255,.08);
+      border-radius:14px; padding:14px;
+    }
+    .pp-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
+    .pp-head h2{font-size:.88rem;color:#aac4ff;font-weight:700;}
+    .mode-badge{
+      font-size:.65rem; font-weight:700; padding:3px 8px;
+      border-radius:20px; border:1px solid;
+    }
+    .mode-edit{color:#f0c040;border-color:#f0c040;background:rgba(240,192,64,.1);}
+    .mode-lock{color:#25a244;border-color:#25a244;background:rgba(37,162,68,.1);}
+
+    .wait{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:300px;gap:10px;}
+    .wait .wi{font-size:2.5rem;}
+    .wait p{color:#aac4ff;font-size:.82rem;text-align:center;}
+
+    .card-scroll{overflow:auto;display:none;}
+
+    /* The card area — contains image + absolute overlays */
+    #card-area{
+      position:relative; display:inline-block;
+      user-select:none;
+    }
+    #tpl-img{display:block; max-width:100%;}
+
+    /* ─── OVERLAY ELEMENTS ─── */
+    .ov{
+      position:absolute;
+      font-family:Arial,sans-serif;
+      font-weight:700;
+      color:#0a1020;
+      cursor:move;
+      white-space:nowrap;
+      line-height:1;
+      padding:1px 2px;
+      touch-action:none;
+    }
+    .ov.edit-mode{
+      outline:1.5px dashed rgba(255,80,80,.7);
+      background:rgba(255,255,255,.35);
+      border-radius:2px;
+    }
+    .ov.active-drag{ outline-color:rgba(255,200,0,.9); z-index:999; }
+
+    /* Photo overlay */
+    #ov-photo{
+      cursor:move;
+      outline:2px dashed rgba(255,80,80,.6);
+    }
+    #ov-photo img{display:block;width:100%;height:100%;object-fit:cover;}
+    #ov-photo.lock-mode{outline:none;}
+
+    /* Checkmark overlays */
+    .ov-check{
+      position:absolute;
+      font-size:14px;
+      font-weight:900;
+      color:#0a1020;
+      cursor:move;
+      line-height:1;
+    }
+    .ov-check.edit-mode{outline:1.5px dashed rgba(255,80,80,.7);}
+
+    /* Toast */
+    .toast{
+      position:fixed;bottom:18px;right:18px;
+      background:#25a244;color:#fff;padding:9px 15px;
+      border-radius:8px;font-weight:700;font-size:.8rem;
+      box-shadow:0 4px 16px rgba(0,0,0,.3);
+      transform:translateY(60px);opacity:0;transition:all .25s;z-index:9999;
+    }
+    .toast.show{transform:translateY(0);opacity:1;}
+
+    @media(max-width:950px){
+      .wrap{grid-template-columns:1fr;}
+      .fp{position:static;max-height:none;}
+    }
+  </style>
+</head>
+<body>
+
+<h1>🎓 Drishti Admit Card — Data Filler</h1>
+<p class="sub">Card image upload karo → Form bharo → Drag karke text position set karo → Download karo</p>
+
+<div class="wrap">
+
+<!-- ══ FORM PANEL ══ -->
+<div class="fp">
+  <h2>📋 Steps Follow Karo</h2>
+
+  <!-- Step 1 -->
+  <div class="step-title">① Card Template Upload karo</div>
+  <div class="upbox" id="tpl-box">
+    <input type="file" id="tpl-file" accept="image/*"/>
+    <div class="uico">🖼️</div>
+    <p>Apna original Drishti card image yahan upload karo</p>
+    <p style="color:#f0c040;font-size:.64rem;margin-top:2px;">Yahi image exact background banega</p>
+  </div>
+
+  <!-- Step 2 -->
+  <div class="step-title">② Student Photo Upload karo</div>
+  <div class="upbox" id="ph-box">
+    <input type="file" id="ph-file" accept="image/*"/>
+    <div id="ph-content">
+      <div class="uico">📷</div>
+      <p>45×55mm auto-resize hogi</p>
+    </div>
+  </div>
+
+  <!-- Step 3 -->
+  <div class="step-title">③ Details Bharo</div>
+
+  <div class="fg"><label>Student Name</label>
+    <input type="text" id="f-name" placeholder="Poora naam"/></div>
+  <div class="fg"><label>Father's Name</label>
+    <input type="text" id="f-father" placeholder="Pita ka naam"/></div>
+  <div class="fg"><label>Mother's Name</label>
+    <input type="text" id="f-mother" placeholder="Mata ka naam"/></div>
+  <div class="fg"><label>Class</label>
+    <input type="text" id="f-class" placeholder="10th / 12th etc."/></div>
+  <div class="fg"><label>Aadhar Number</label>
+    <input type="text" id="f-aadhar" placeholder="XXXX XXXX XXXX" maxlength="14" oninput="fmtAadhar(this)"/></div>
+  <div class="fg"><label>Registration Number</label>
+    <input type="text" id="f-reg" placeholder="Reg number"/></div>
+  <div class="fg"><label>Mobile Number</label>
+    <input type="text" id="f-mobile" placeholder="10 digit" maxlength="10"/></div>
+  <div class="fg"><label>Date of Birth</label>
+    <input type="date" id="f-dob"/></div>
+  <div class="fg"><label>Gender</label>
+    <div class="gr">
+      <label class="go"><input type="radio" name="g" value="Male"/> Male</label>
+      <label class="go"><input type="radio" name="g" value="Female"/> Female</label>
+    </div>
+  </div>
+  <div class="fg"><label>Address</label>
+    <input type="text" id="f-address" placeholder="Poora pata"/></div>
+
+  <!-- Font size -->
+  <div class="step-title">④ Font Size Adjust karo</div>
+  <div class="fs-row">
+    <label>Text Size</label>
+    <input type="range" id="fs-slider" min="8" max="28" value="14" oninput="updateFontSize(this.value)"/>
+    <span id="fs-val">14</span>
+  </div>
+
+  <!-- Buttons -->
+  <div class="btns">
+    <button class="btn bg" onclick="applyData()">✅ Data Card pe Lagao</button>
+    <button class="btn br" onclick="toggleMode()">🔄 Edit / Lock Mode Toggle</button>
+    <button class="btn bv" id="dl-btn" onclick="downloadCard()" disabled>⬇️ JPG Download Karo</button>
+  </div>
+
+  <div class="hint">
+    💡 <strong>Tip:</strong> Text galat jagah hai to <strong>usse drag</strong> karke sahi position pe le jao.<br/>
+    🔴 Red outline = Edit mode (drag kar sakte ho)<br/>
+    🟢 Lock mode = Download ke liye ready
+  </div>
+</div>
+
+<!-- ══ PREVIEW PANEL ══ -->
+<div class="pp">
+  <div class="pp-head">
+    <h2>👁️ Card Preview (Drag to Reposition)</h2>
+    <div class="mode-badge mode-edit" id="mode-badge">✏️ EDIT MODE</div>
+  </div>
+
+  <div class="wait" id="wait-msg">
+    <div class="wi">☝️</div>
+    <p><strong>Step 1: Card template image upload karo</strong><br/>
+    Uske baad form fill karo aur data lagao</p>
+  </div>
+
+  <div class="card-scroll" id="card-scroll">
+    <div id="card-area">
+      <img id="tpl-img" alt="Card Template"/>
+
+      <!-- PHOTO overlay -->
+      <div id="ov-photo" style="position:absolute;width:13%;left:3.5%;top:19%;cursor:move;outline:2px dashed rgba(255,80,80,.7);">
+        <img id="ov-photo-img" style="display:none;width:100%;object-fit:cover;aspect-ratio:45/55;"/>
+        <div id="ph-placeholder" style="width:100%;aspect-ratio:45/55;background:rgba(255,80,80,.1);display:flex;align-items:center;justify-content:center;font-size:0.6rem;color:rgba(255,80,80,.7);text-align:center;">PHOTO<br/>DRAG HERE</div>
+      </div>
+
+      <!-- TEXT overlays — positioned as % of card size -->
+      <div class="ov edit-mode" id="ov-name"    style="left:31%;top:44%;font-size:14px;">&nbsp;</div>
+      <div class="ov edit-mode" id="ov-father"  style="left:31%;top:48%;font-size:14px;">&nbsp;</div>
+      <div class="ov edit-mode" id="ov-mother"  style="left:31%;top:52%;font-size:14px;">&nbsp;</div>
+      <div class="ov edit-mode" id="ov-class"   style="left:31%;top:56%;font-size:14px;">&nbsp;</div>
+      <div class="ov edit-mode" id="ov-aadhar"  style="left:31%;top:60%;font-size:14px;">&nbsp;</div>
+      <div class="ov edit-mode" id="ov-reg"     style="left:31%;top:63.5%;font-size:14px;">&nbsp;</div>
+      <div class="ov edit-mode" id="ov-mobile"  style="left:31%;top:67.5%;font-size:14px;">&nbsp;</div>
+      <div class="ov edit-mode" id="ov-dob"     style="left:31%;top:71%;font-size:14px;">&nbsp;</div>
+      <div class="ov edit-mode" id="ov-address" style="left:31%;top:75%;font-size:14px;">&nbsp;</div>
+
+      <!-- Gender checkmarks -->
+      <div class="ov-check edit-mode" id="ov-gm" style="left:67%;top:71%;font-size:14px;">&nbsp;</div>
+      <div class="ov-check edit-mode" id="ov-gf" style="left:79%;top:71%;font-size:14px;">&nbsp;</div>
+    </div>
+  </div>
+</div>
+
+</div><!-- .wrap -->
+
+<div class="toast" id="toast">Done!</div>
+
+<script>
+  // ─── State ───────────────────────────────────────────
+  let isEditMode = true;
+  let fontSize   = 14;
+  let photoLoaded = false;
+
+  // ─── Aadhar formatter ───────────────────────────────
+  function fmtAadhar(el){
+    let v=el.value.replace(/\D/g,'').slice(0,12);
+    el.value=v.replace(/(\d{4})(?=\d)/g,'$1 ').trim();
+  }
+  function fmtDate(ds){
+    if(!ds)return'';
+    const[y,m,d]=ds.split('-'); return `${d}/${m}/${y}`;
+  }
+  function gv(id){return document.getElementById(id).value.trim();}
+
+  // ─── Template Upload ─────────────────────────────────
+  document.getElementById('tpl-file').addEventListener('change', function(e){
+    const f=e.target.files[0]; if(!f) return;
+    const r=new FileReader();
+    r.onload=ev=>{
+      const img=document.getElementById('tpl-img');
+      img.onload=()=>{
+        document.getElementById('wait-msg').style.display='none';
+        document.getElementById('card-scroll').style.display='block';
+
+        // Scale card-area to fit preview
+        const maxW=Math.min(900, window.innerWidth-360);
+        img.style.width=maxW+'px';
+        img.style.height='auto';
+
+        showToast('🖼️ Card template load ho gaya! Ab form bharo.');
+      };
+      img.src=ev.target.result;
+      document.getElementById('tpl-box').innerHTML=
+        `<input type="file" id="tpl-file" accept="image/*"/>` +
+        `<p class="ok">✅ Template loaded — change karne ke liye click karein</p>`;
+      document.getElementById('tpl-file').addEventListener('change',arguments.callee.bind(this));
+    };
+    r.readAsDataURL(f);
+  });
+
+  // ─── Photo Upload ────────────────────────────────────
+  document.getElementById('ph-file').addEventListener('change', function(e){
+    const f=e.target.files[0]; if(!f) return;
+    const r=new FileReader();
+    r.onload=ev=>{
+      const raw=new Image();
+      raw.onload=()=>{
+        // Resize to 45×55 ratio at high res
+        const W=360,H=440;
+        const cv=document.createElement('canvas');
+        cv.width=W; cv.height=H;
+        const cx=cv.getContext('2d');
+        cx.fillStyle='#fff'; cx.fillRect(0,0,W,H);
+        const scale=Math.max(W/raw.width,H/raw.height);
+        const sw=raw.width*scale,sh=raw.height*scale;
+        cx.drawImage(raw,(W-sw)/2,(H-sh)/2,sw,sh);
+        const dataUrl=cv.toDataURL('image/jpeg',0.96);
+
+        const pi=document.getElementById('ov-photo-img');
+        const pp=document.getElementById('ph-placeholder');
+        pi.src=dataUrl; pi.style.display='block';
+        pp.style.display='none';
+        photoLoaded=true;
+
+        // Thumb in form
+        document.getElementById('ph-content').innerHTML=
+          `<img src="${dataUrl}" style="width:44px;height:54px;object-fit:cover;border-radius:3px;border:2px solid #f0c040;display:block;margin:0 auto 4px;"/>` +
+          `<p class="ok">✓ Photo ready (45×55mm)</p><p style="font-size:.64rem;color:#aac4ff;">Change karein</p>`;
+
+        showToast('📷 Photo 45×55mm mein set ho gaya! Drag karo to position it.');
+      };
+      raw.src=ev.target.result;
+    };
+    r.readAsDataURL(f);
+  });
+
+  // ─── Apply Data ──────────────────────────────────────
+  function applyData(){
+    setText('ov-name',    gv('f-name'));
+    setText('ov-father',  gv('f-father'));
+    setText('ov-mother',  gv('f-mother'));
+    setText('ov-class',   gv('f-class'));
+    setText('ov-aadhar',  gv('f-aadhar'));
+    setText('ov-reg',     gv('f-reg'));
+    setText('ov-mobile',  gv('f-mobile'));
+    setText('ov-dob',     fmtDate(gv('f-dob')));
+    setText('ov-address', gv('f-address'));
+
+    // Gender
+    const gEl=document.querySelector('input[name="g"]:checked');
+    const gender=gEl?gEl.value:'';
+    document.getElementById('ov-gm').textContent = gender==='Male'   ? '✓' : '';
+    document.getElementById('ov-gf').textContent = gender==='Female' ? '✓' : '';
+    document.getElementById('ov-gm').style.fontSize = fontSize+'px';
+    document.getElementById('ov-gf').style.fontSize = fontSize+'px';
+
+    document.getElementById('dl-btn').disabled = !gv('f-name');
+    showToast('✅ Data laga diya! Ab drag karke position adjust karo.');
+  }
+
+  function setText(id, val){
+    const el=document.getElementById(id);
+    el.textContent = val || '';
+    el.style.fontSize = fontSize+'px';
+  }
+
+  // ─── Font size ───────────────────────────────────────
+  function updateFontSize(v){
+    fontSize=parseInt(v);
+    document.getElementById('fs-val').textContent=v;
+    document.querySelectorAll('.ov,.ov-check').forEach(el=>{
+      el.style.fontSize=v+'px';
+    });
+  }
+
+  // ─── Toggle Edit/Lock Mode ───────────────────────────
+  function toggleMode(){
+    isEditMode=!isEditMode;
+    const badge=document.getElementById('mode-badge');
+    const photo=document.getElementById('ov-photo');
+    if(isEditMode){
+      badge.textContent='✏️ EDIT MODE';
+      badge.className='mode-badge mode-edit';
+      document.querySelectorAll('.ov,.ov-check').forEach(e=>e.classList.add('edit-mode'));
+      photo.style.outline='2px dashed rgba(255,80,80,.7)';
+    } else {
+      badge.textContent='🔒 LOCKED';
+      badge.className='mode-badge mode-lock';
+      document.querySelectorAll('.ov,.ov-check').forEach(e=>e.classList.remove('edit-mode'));
+      photo.style.outline='none';
+    }
+    showToast(isEditMode?'✏️ Edit mode — drag kar sakte ho':'🔒 Locked — download ready!');
+  }
+
+  // ─── Download ────────────────────────────────────────
+  async function downloadCard(){
+    // Lock mode for clean download
+    const wasEdit=isEditMode;
+    if(wasEdit) toggleMode();
+
+    const btn=document.getElementById('dl-btn');
+    btn.textContent='⏳ Generating...'; btn.disabled=true;
+
+    // Wait a frame for repaint
+    await new Promise(r=>setTimeout(r,150));
+
+    try{
+      const cardArea=document.getElementById('card-area');
+      const canvas=await html2canvas(cardArea,{
+        scale:2.5,
+        useCORS:true,
+        allowTaint:true,
+        backgroundColor:'#ffffff',
+        logging:false,
+        width:cardArea.scrollWidth,
+        height:cardArea.scrollHeight,
+      });
+
+      const name=gv('f-name').split(' ')[0]||'Student';
+      const a=document.createElement('a');
+      a.download=name+'_admit_card.jpg';
+      a.href=canvas.toDataURL('image/jpeg',0.98);
+      a.click();
+      showToast('⬇️ '+name+'_admit_card.jpg download ho raha hai!');
+    }catch(err){
+      console.error(err);
+      showToast('❌ Error — F12 console dekho');
+    }
+
+    btn.textContent='⬇️ JPG Download Karo'; btn.disabled=false;
+    if(wasEdit) toggleMode(); // Restore edit mode
+  }
+
+  // ─── Toast ───────────────────────────────────────────
+  function showToast(msg){
+    const t=document.getElementById('toast');
+    t.textContent=msg; t.classList.add('show');
+    setTimeout(()=>t.classList.remove('show'),3000);
+  }
+
+  // ─── DRAG SYSTEM ─────────────────────────────────────
+  // Makes any element draggable within its parent
+  function makeDraggable(el){
+    let startX,startY,startLeft,startTop;
+
+    function getParentRect(){
+      return el.parentElement.getBoundingClientRect();
+    }
+
+    function onDown(e){
+      if(!isEditMode) return;
+      e.preventDefault();
+      el.classList.add('active-drag');
+      const pr=getParentRect();
+      const er=el.getBoundingClientRect();
+
+      const clientX=e.touches?e.touches[0].clientX:e.clientX;
+      const clientY=e.touches?e.touches[0].clientY:e.clientY;
+
+      startX=clientX-er.left;
+      startY=clientY-er.top;
+      startLeft=er.left-pr.left;
+      startTop=er.top-pr.top;
+
+      document.addEventListener('mousemove',onMove,{passive:false});
+      document.addEventListener('touchmove',onMove,{passive:false});
+      document.addEventListener('mouseup',onUp);
+      document.addEventListener('touchend',onUp);
+    }
+
+    function onMove(e){
+      e.preventDefault();
+      const pr=getParentRect();
+      const clientX=e.touches?e.touches[0].clientX:e.clientX;
+      const clientY=e.touches?e.touches[0].clientY:e.clientY;
+
+      let newLeft=clientX-pr.left-startX;
+      let newTop =clientY-pr.top -startY;
+
+      // Clamp within parent
+      newLeft=Math.max(0,Math.min(newLeft, pr.width - el.offsetWidth));
+      newTop =Math.max(0,Math.min(newTop,  pr.height- el.offsetHeight));
+
+      // Store as % for responsiveness
+      const pctL=(newLeft/pr.width*100).toFixed(2)+'%';
+      const pctT=(newTop /pr.height*100).toFixed(2)+'%';
+      el.style.left=pctL;
+      el.style.top =pctT;
+    }
+
+    function onUp(){
+      el.classList.remove('active-drag');
+      document.removeEventListener('mousemove',onMove);
+      document.removeEventListener('touchmove',onMove);
+      document.removeEventListener('mouseup',onUp);
+      document.removeEventListener('touchend',onUp);
+    }
+
+    el.addEventListener('mousedown',onDown);
+    el.addEventListener('touchstart',onDown,{passive:false});
+  }
+
+  // Activate drag on all overlays
+  ['ov-photo','ov-name','ov-father','ov-mother','ov-class',
+   'ov-aadhar','ov-reg','ov-mobile','ov-dob','ov-address',
+   'ov-gm','ov-gf'].forEach(id=>{
+    makeDraggable(document.getElementById(id));
+  });
+
+  // Load html2canvas script dynamically
+  (function(){
+    const s=document.createElement('script');
+    s.src='https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
+    document.head.appendChild(s);
+  })();
+</script>
+</body>
+</html>

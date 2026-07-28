@@ -1,0 +1,723 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Drishti Admit Card System - Dashboard</title>
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <!-- Bootstrap 5 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- FontAwesome Icons -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+  <!-- Custom CSS for Premium Dark UI -->
+  <style>
+    :root {
+      --bg-primary: #080f1e;
+      --bg-secondary: #0f1a30;
+      --bg-card: rgba(255, 255, 255, 0.03);
+      --border-color: rgba(255, 255, 255, 0.08);
+      --accent-color: #f0c040;
+      --accent-hover: #d4a017;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --success: #10b981;
+      --danger: #ef4444;
+      --shadow-premium: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: var(--bg-primary);
+      color: var(--text-main);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    h1, h2, h3, h4, h5, h6 {
+      font-family: 'Poppins', sans-serif;
+      font-weight: 700;
+    }
+
+    /* Glassmorphism card */
+    .glass-card {
+      background: var(--bg-card);
+      backdrop-filter: blur(12px);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      padding: 24px;
+      box-shadow: var(--shadow-premium);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    
+    .glass-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 15px 35px -5px rgba(0, 0, 0, 0.6);
+      border-color: rgba(240, 192, 64, 0.2);
+    }
+
+    /* Stats Card custom style */
+    .stat-icon {
+      width: 54px;
+      height: 54px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+    }
+
+    .bg-accent-transparent {
+      background-color: rgba(240, 192, 64, 0.1);
+      color: var(--accent-color);
+    }
+    .bg-success-transparent {
+      background-color: rgba(16, 185, 129, 0.1);
+      color: var(--success);
+    }
+    .bg-danger-transparent {
+      background-color: rgba(239, 68, 68, 0.1);
+      color: var(--danger);
+    }
+    .bg-info-transparent {
+      background-color: rgba(59, 130, 246, 0.1);
+      color: #3b82f6;
+    }
+
+    /* Navbar styling */
+    .premium-navbar {
+      background-color: rgba(15, 26, 48, 0.85);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border-color);
+      padding: 16px 0;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+
+    /* Premium Button overrides */
+    .btn-premium {
+      background: linear-gradient(135deg, var(--accent-color), var(--accent-hover));
+      color: #080f1e;
+      border: none;
+      font-weight: 700;
+      border-radius: 10px;
+      padding: 10px 20px;
+      transition: all 0.2s;
+      font-size: 0.9rem;
+    }
+    .btn-premium:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 8px 20px rgba(240, 192, 64, 0.35);
+      background: linear-gradient(135deg, var(--accent-hover), var(--accent-color));
+      color: #080f1e;
+    }
+
+    .btn-premium-secondary {
+      background: rgba(255, 255, 255, 0.05);
+      color: var(--text-main);
+      border: 1px solid var(--border-color);
+      font-weight: 600;
+      border-radius: 10px;
+      padding: 10px 20px;
+      transition: all 0.2s;
+    }
+    .btn-premium-secondary:hover {
+      background: rgba(255, 255, 255, 0.1);
+      color: #fff;
+      border-color: rgba(255, 255, 255, 0.2);
+    }
+
+    /* Table styling */
+    .premium-table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0 8px;
+    }
+    .premium-table th {
+      border: none;
+      color: var(--text-muted);
+      font-weight: 600;
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      padding: 12px 16px;
+    }
+    .premium-table tbody tr {
+      background-color: rgba(255, 255, 255, 0.02);
+      border-radius: 12px;
+      transition: all 0.15s;
+    }
+    .premium-table tbody tr:hover {
+      background-color: rgba(255, 255, 255, 0.05);
+      transform: scale(1.002);
+    }
+    .premium-table td {
+      border: none;
+      padding: 16px;
+      vertical-align: middle;
+    }
+    .premium-table td:first-child {
+      border-top-left-radius: 12px;
+      border-bottom-left-radius: 12px;
+    }
+    .premium-table td:last-child {
+      border-top-right-radius: 12px;
+      border-bottom-right-radius: 12px;
+    }
+
+    /* Custom Form Fields */
+    .premium-input {
+      background-color: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--border-color);
+      color: var(--text-main);
+      border-radius: 10px;
+      padding: 10px 14px;
+      font-size: 0.9rem;
+      transition: all 0.2s;
+    }
+    .premium-input:focus {
+      background-color: rgba(255, 255, 255, 0.07);
+      border-color: var(--accent-color);
+      box-shadow: 0 0 10px rgba(240, 192, 64, 0.15);
+      color: #fff;
+      outline: none;
+    }
+    .premium-input::placeholder {
+      color: var(--text-muted);
+    }
+
+    /* Badges */
+    .premium-badge {
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 4px 10px;
+      border-radius: 20px;
+      border: 1px solid transparent;
+    }
+    .badge-generated {
+      background-color: rgba(16, 185, 129, 0.1);
+      color: var(--success);
+      border-color: rgba(16, 185, 129, 0.2);
+    }
+    .badge-pending {
+      background-color: rgba(240, 192, 64, 0.1);
+      color: var(--accent-color);
+      border-color: rgba(240, 192, 64, 0.2);
+    }
+
+    /* Task Progress CSS */
+    .progress-bar-premium {
+      height: 8px;
+      border-radius: 4px;
+      background-color: rgba(255, 255, 255, 0.08);
+      overflow: hidden;
+      margin-top: 10px;
+    }
+    .progress-bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--accent-color), var(--success));
+      width: 0%;
+      transition: width 0.3s;
+    }
+
+    /* Toast overlay styling */
+    .notification-banner {
+      border-left: 4px solid var(--accent-color);
+    }
+
+    /* Log styling */
+    .log-item {
+      font-size: 0.85rem;
+      border-bottom: 1px solid var(--border-color);
+      padding: 10px 0;
+    }
+    .log-item:last-child {
+      border-bottom: none;
+    }
+
+    /* Print styling */
+    @media print {
+      body * {
+        visibility: hidden;
+      }
+      #print-area, #print-area * {
+        visibility: visible;
+      }
+      #print-area {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <nav class="premium-navbar">
+    <div class="container-fluid px-5">
+      <div class="d-flex align-items-center justify-content-between">
+        <a href="{% url 'dashboard' %}" class="d-flex align-items-center text-decoration-none">
+          <span class="fs-4 fw-bold text-white me-2">🎓 Drishti</span>
+          <span class="fs-6 text-muted border-start border-secondary ps-2">Admit Card Panel</span>
+        </a>
+        <div class="d-flex gap-3">
+          <a href="{% url 'add_student' %}" class="btn btn-premium">
+            <i class="fa-solid fa-plus me-1"></i> Add Student
+          </a>
+          <button class="btn btn-premium-secondary" data-bs-toggle="modal" data-bs-target="#importModal">
+            <i class="fa-solid fa-file-import me-1"></i> Excel Import
+          </button>
+          <a href="{% url 'export_excel' %}" class="btn btn-premium-secondary">
+            <i class="fa-solid fa-file-export me-1"></i> Excel Export
+          </a>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container-fluid px-5 py-4">
+    <!-- Messages Banner -->
+    {% if messages %}
+      {% for m in messages %}
+        <div class="alert alert-dismissible fade show glass-card notification-banner mb-4 d-flex justify-content-between align-items-center" role="alert">
+          <div>
+            <i class="fa-solid fa-circle-check text-success me-2"></i>
+            {{ m }}
+          </div>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+      {% endfor %}
+    {% endif %}
+
+    <!-- STATS ROW -->
+    <div class="row g-4 mb-4">
+      <div class="col-md-3">
+        <div class="glass-card d-flex align-items-center justify-content-between">
+          <div>
+            <div class="text-muted small fw-semibold">Total Students</div>
+            <div class="fs-2 fw-bold mt-1">{{ total_students }}</div>
+          </div>
+          <div class="stat-icon bg-info-transparent">
+            <i class="fa-solid fa-users"></i>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="glass-card d-flex align-items-center justify-content-between">
+          <div>
+            <div class="text-muted small fw-semibold">Cards Generated</div>
+            <div class="fs-2 fw-bold mt-1 text-success">{{ generated_count }}</div>
+          </div>
+          <div class="stat-icon bg-success-transparent">
+            <i class="fa-solid fa-id-card"></i>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="glass-card d-flex align-items-center justify-content-between">
+          <div>
+            <div class="text-muted small fw-semibold">Pending Cards</div>
+            <div class="fs-2 fw-bold mt-1 text-warning">{{ pending_count }}</div>
+          </div>
+          <div class="stat-icon bg-accent-transparent">
+            <i class="fa-solid fa-hourglass-half"></i>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="glass-card d-flex align-items-center justify-content-between">
+          <div>
+            <div class="text-muted small fw-semibold">Generated Today</div>
+            <div class="fs-2 fw-bold mt-1">{{ generated_today }}</div>
+          </div>
+          <div class="stat-icon bg-danger-transparent">
+            <i class="fa-solid fa-calendar-check"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ACTIVE BACKGROUND TASKS SECTION -->
+    <div id="tasks-container" class="mb-4 d-none">
+      <div class="glass-card">
+        <h5 class="text-warning mb-2"><i class="fa-solid fa-circle-notch fa-spin me-2"></i> Background Progress</h5>
+        <div id="tasks-list">
+          <!-- Dynamically populated -->
+        </div>
+      </div>
+    </div>
+
+    <!-- MAIN INTERFACE ROW -->
+    <div class="row g-4">
+      <!-- Student List Panel -->
+      <div class="col-lg-9">
+        <div class="glass-card h-100">
+          <div class="d-flex align-items-center justify-content-between mb-4 flex-wrap gap-3">
+            <h4 class="m-0 text-white"><i class="fa-solid fa-database me-2 text-warning"></i> Student Database</h4>
+            <div class="d-flex gap-2">
+              <button id="btn-generate-all" class="btn btn-premium">
+                <i class="fa-solid fa-gears me-1"></i> Generate All
+              </button>
+              <button id="btn-zip-download" class="btn btn-premium-secondary">
+                <i class="fa-solid fa-file-zipper me-1"></i> Download ZIP
+              </button>
+            </div>
+          </div>
+
+          <!-- SEARCH & FILTERS -->
+          <form method="GET" class="row g-3 mb-4">
+            <div class="col-md-4">
+              <div class="input-group">
+                <span class="input-group-text bg-transparent border-end-0 border-secondary text-muted"><i class="fa-solid fa-magnifying-glass"></i></span>
+                <input type="text" name="q" value="{{ query }}" class="form-control premium-input border-start-0 ps-0" placeholder="Search by name, reg, mobile, aadhaar...">
+              </div>
+            </div>
+            <div class="col-md-2">
+              <select name="class" class="form-select premium-input">
+                <option value="">All Classes</option>
+                {% for c in classes %}
+                  <option value="{{ c }}" {% if class_filter == c %}selected{% endif %}>{{ c }}</option>
+                {% endfor %}
+              </select>
+            </div>
+            <div class="col-md-2">
+              <select name="batch" class="form-select premium-input">
+                <option value="">All Batches</option>
+                {% for b in batches %}
+                  <option value="{{ b }}" {% if batch_filter == b %}selected{% endif %}>{{ b }}</option>
+                {% endfor %}
+              </select>
+            </div>
+            <div class="col-md-2">
+              <select name="status" class="form-select premium-input">
+                <option value="">All Status</option>
+                <option value="generated" {% if status_filter == 'generated' %}selected{% endif %}>Generated</option>
+                <option value="pending" {% if status_filter == 'pending' %}selected{% endif %}>Pending</option>
+              </select>
+            </div>
+            <div class="col-md-2 d-flex gap-2">
+              <button type="submit" class="btn btn-premium-secondary w-100"><i class="fa-solid fa-filter"></i></button>
+              <a href="{% url 'dashboard' %}" class="btn btn-premium-secondary"><i class="fa-solid fa-arrows-rotate"></i></a>
+            </div>
+          </form>
+
+          <!-- STUDENTS TABLE -->
+          <div class="table-responsive" style="max-height: 60vh; overflow-y: auto;">
+            <table class="premium-table">
+              <thead>
+                <tr>
+                  <th>Student Info</th>
+                  <th>Reg. Number</th>
+                  <th>Class / Batch</th>
+                  <th>Gender / DOB</th>
+                  <th>Admit Card Files</th>
+                  <th class="text-end">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for s in students %}
+                  <tr>
+                    <td>
+                      <div class="d-flex align-items-center">
+                        <div class="me-3">
+                          {% if s.photo %}
+                            <img src="{{ s.photo.url }}" class="rounded-circle border border-secondary" style="width: 44px; height: 44px; object-fit: cover;">
+                          {% else %}
+                            <div class="rounded-circle bg-secondary d-flex align-items-center justify-content-center text-white" style="width: 44px; height: 44px;">
+                              <i class="fa-solid fa-user"></i>
+                            </div>
+                          {% endif %}
+                        </div>
+                        <div>
+                          <div class="fw-bold text-white">{{ s.name }}</div>
+                          <div class="text-muted small">F: {{ s.father_name }}</div>
+                        </div>
+                      </div>
+                    </td>
+                    <td>
+                      <code class="text-warning fw-semibold">{{ s.registration_number }}</code>
+                    </td>
+                    <td>
+                      <div>{{ s.student_class }}</div>
+                      <div class="text-muted small">{{ s.batch }}</div>
+                    </td>
+                    <td>
+                      <div>{{ s.gender }}</div>
+                      <div class="text-muted small">{{ s.dob|date:"d/m/Y" }}</div>
+                    </td>
+                    <td>
+                      {% if s.is_generated %}
+                        <span class="premium-badge badge-generated mb-2 d-inline-block">Generated</span>
+                        <div class="d-flex gap-2">
+                          <a href="{% url 'download_card_api' %}?student_id={{ s.id }}&format=jpg" class="btn btn-sm btn-outline-info py-0 px-2" style="font-size: 0.72rem;"><i class="fa-solid fa-image"></i> JPG</a>
+                          <a href="{% url 'download_card_api' %}?student_id={{ s.id }}&format=pdf" class="btn btn-sm btn-outline-danger py-0 px-2" style="font-size: 0.72rem;"><i class="fa-solid fa-file-pdf"></i> PDF</a>
+                        </div>
+                      {% else %}
+                        <span class="premium-badge badge-pending">Pending</span>
+                      {% endif %}
+                    </td>
+                    <td class="text-end">
+                      <div class="d-flex justify-content-end gap-2">
+                        <button class="btn btn-sm btn-premium py-1 px-2 btn-generate-single" data-id="{{ s.id }}">
+                          <i class="fa-solid fa-wand-magic-sparkles"></i> Generate
+                        </button>
+                        {% if s.is_generated %}
+                          <button class="btn btn-sm btn-premium-secondary py-1 px-2 btn-preview" data-name="{{ s.name }}" data-url="{{ s.card_jpg.url }}">
+                            <i class="fa-solid fa-eye"></i> Preview
+                          </button>
+                        {% endif %}
+                        <a href="{% url 'edit_student' s.pk %}" class="btn btn-sm btn-premium-secondary py-1 px-2"><i class="fa-solid fa-pen-to-square"></i></a>
+                        <a href="{% url 'delete_student' s.pk %}" class="btn btn-sm btn-premium-secondary py-1 px-2 text-danger" onclick="return confirm('Are you sure you want to delete this student?')"><i class="fa-solid fa-trash-can"></i></a>
+                      </div>
+                    </td>
+                  </tr>
+                {% empty %}
+                  <tr>
+                    <td colspan="6" class="text-center py-5 text-muted">
+                      <i class="fa-solid fa-inbox fs-3 mb-3 d-block"></i>
+                      No student records found in the database.
+                    </td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Activity Logs / Info -->
+      <div class="col-lg-3">
+        <div class="glass-card h-100 d-flex flex-column">
+          <h5 class="text-white mb-3"><i class="fa-solid fa-chart-line text-warning me-2"></i> Activity Logs</h5>
+          <div class="flex-grow-1 overflow-y-auto" style="max-height: 40vh;">
+            {% for log in logs %}
+              <div class="log-item">
+                <div class="d-flex justify-content-between text-muted small">
+                  <span>{{ log.user.username|default:"System" }}</span>
+                  <span>{{ log.timestamp|date:"H:i" }}</span>
+                </div>
+                <div class="text-white mt-1 fw-semibold">{{ log.action }}</div>
+                <div class="text-muted small mt-1">{{ log.details }}</div>
+              </div>
+            {% empty %}
+              <div class="text-muted small py-4 text-center">No logs generated yet.</div>
+            {% endfor %}
+          </div>
+          <div class="mt-4 pt-3 border-top border-secondary">
+            <h6 class="text-white mb-2">Instructions Note</h6>
+            <p class="text-muted small m-0" style="line-height: 1.5;">
+              Dynamic data is overlaid on top of the original template JPG. You can bulk import students through an Excel sheet and download all cards zipped in one click.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- EXCEL IMPORT MODAL -->
+  <div class="modal fade" id="importModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content bg-secondary text-white" style="border: 1px solid var(--border-color); border-radius: 16px;">
+        <div class="modal-header border-bottom-0 pb-0">
+          <h5 class="modal-title">Bulk Import Students</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <form action="{% url 'bulk_import_excel' %}" method="POST" enctype="multipart/form-data">
+          {% csrf_token %}
+          <div class="modal-body py-4">
+
+            <p class="text-muted small">Upload an Excel (.xlsx) file with columns: Student Name, Father Name, Mother Name, Class, DOB, Gender, Address, Registration, Aadhaar, Mobile, Photo Filename.</p>
+            <div class="mb-3">
+              <label class="form-label text-muted small">Select Excel Sheet</label>
+              <input type="file" name="excel_file" accept=".xlsx" class="form-control premium-input w-100" required>
+            </div>
+            <div class="mb-3">
+              <label class="form-label text-muted small">Batch Name (optional)</label>
+              <input type="text" name="batch" value="Batch 2026" class="form-control premium-input w-100">
+            </div>
+          </div>
+          <div class="modal-footer border-top-0 pt-0">
+            <button type="button" class="btn btn-premium-secondary" data-bs-dismiss="modal">Cancel</button>
+            <button type="submit" class="btn btn-premium">Import Excel</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- CARD PREVIEW MODAL -->
+  <div class="modal fade" id="previewModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+      <div class="modal-content bg-secondary text-white" style="border: 1px solid var(--border-color); border-radius: 16px;">
+        <div class="modal-header border-bottom-0">
+          <h5 class="modal-title" id="previewModalTitle">Student Admit Card Preview</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body text-center p-0" id="print-area">
+          <img id="previewModalImage" src="" class="img-fluid border border-dark rounded" alt="Admit Card Preview" style="max-height: 80vh;">
+        </div>
+        <div class="modal-footer border-top-0">
+          <button type="button" class="btn btn-premium-secondary" onclick="window.print()"><i class="fa-solid fa-print me-1"></i> Print</button>
+          <button type="button" class="btn btn-premium-secondary" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bootstrap 5 JS Bundle -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  
+  <!-- JavaScript for API calls and Realtime Task Progress Polling -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      
+      // Toast notification helper
+      const showToast = (message, isSuccess = true) => {
+        const toast = document.createElement('div');
+        toast.className = `alert glass-card notification-banner d-flex align-items-center border-0 position-fixed bottom-0 end-0 m-4 px-4 py-3 text-white`;
+        toast.style.zIndex = 9999;
+        toast.style.backgroundColor = isSuccess ? '#10b981' : '#ef4444';
+        toast.innerHTML = `<i class="fa-solid ${isSuccess ? 'fa-circle-check' : 'fa-circle-exclamation'} me-2"></i> ${message}`;
+        document.body.appendChild(toast);
+        setTimeout(() => toast.remove(), 4000);
+      };
+
+      // Preview Card handler
+      document.querySelectorAll('.btn-preview').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const name = btn.getAttribute('data-name');
+          const url = btn.getAttribute('data-url');
+          document.getElementById('previewModalTitle').innerText = `${name} - Admit Card Preview`;
+          document.getElementById('previewModalImage').src = url;
+          const myModal = new bootstrap.Modal(document.getElementById('previewModal'));
+          myModal.show();
+        });
+      });
+
+      // Background task state variables
+      let pollInterval = null;
+
+      // Poll background task status
+      const pollTaskStatus = (taskId) => {
+        if (pollInterval) clearInterval(pollInterval);
+        
+        const tasksContainer = document.getElementById('tasks-container');
+        tasksContainer.classList.remove('d-none');
+
+        pollInterval = setInterval(async () => {
+          try {
+            const res = await fetch(`/api/task-status/?task_id=${taskId}`);
+            const data = await res.json();
+            
+            if (data.status === 'RUNNING' || data.status === 'PENDING') {
+              document.getElementById('tasks-list').innerHTML = `
+                <div class="d-flex align-items-center justify-content-between mb-1">
+                  <span class="small font-monospace text-muted">TASK #${data.task_id} (${data.task_type})</span>
+                  <span class="fw-bold text-warning">${data.processed_records} / ${data.total_records} (${data.progress_percent}%)</span>
+                </div>
+                <div class="progress-bar-premium">
+                  <div class="progress-bar-fill" style="width: ${data.progress_percent}%"></div>
+                </div>
+              `;
+            } else if (data.status === 'COMPLETED') {
+              clearInterval(pollInterval);
+              document.getElementById('tasks-list').innerHTML = `<div class="text-success small"><i class="fa-solid fa-circle-check me-2"></i> Bulk Task Completed Successfully!</div>`;
+              setTimeout(() => {
+                tasksContainer.classList.add('d-none');
+                window.location.reload();
+              }, 2000);
+            } else if (data.status === 'FAILED') {
+              clearInterval(pollInterval);
+              document.getElementById('tasks-list').innerHTML = `<div class="text-danger small"><i class="fa-solid fa-circle-xmark me-2"></i> Task Failed: ${data.error_message}</div>`;
+            }
+          } catch (err) {
+            console.error('Error fetching task status:', err);
+          }
+        }, 1000);
+      };
+
+      // Check if there are any tasks running from server side models on page load
+      {% if running_tasks %}
+        {% for task in running_tasks %}
+          pollTaskStatus("{{ task.id }}");
+        {% endfor %}
+      {% endif %}
+
+      // Generate Single Card trigger
+      document.querySelectorAll('.btn-generate-single').forEach(btn => {
+        btn.addEventListener('click', async () => {
+          const studentId = btn.getAttribute('data-id');
+          btn.innerHTML = `<i class="fa-solid fa-circle-notch fa-spin"></i> Generating...`;
+          btn.disabled = true;
+
+          try {
+            const formData = new FormData();
+            formData.append('student_id', studentId);
+            
+            const res = await fetch('/api/generate-card/', {
+              method: 'POST',
+              body: formData
+            });
+            const data = await res.json();
+            
+            if (data.status === 'success') {
+              showToast(data.message, true);
+              setTimeout(() => window.location.reload(), 1500);
+            } else {
+              showToast(data.message, false);
+              btn.innerHTML = `<i class="fa-solid fa-wand-magic-sparkles"></i> Generate`;
+              btn.disabled = false;
+            }
+          } catch (err) {
+            showToast('Connection error, please try again.', false);
+            btn.innerHTML = `<i class="fa-solid fa-wand-magic-sparkles"></i> Generate`;
+            btn.disabled = false;
+          }
+        });
+      });
+
+      // Generate All Cards trigger
+      document.getElementById('btn-generate-all').addEventListener('click', async () => {
+        if (!confirm('Are you sure you want to generate admit cards for all pending students? This runs in the background.')) return;
+        
+        try {
+          const res = await fetch('/api/generate-all/', { method: 'POST' });
+          const data = await res.json();
+          if (data.status === 'success') {
+            showToast(data.message, true);
+            pollTaskStatus(data.task_id);
+          } else {
+            showToast(data.message, false);
+          }
+        } catch (err) {
+          showToast('Failed to trigger bulk generation.', false);
+        }
+      });
+
+      // Download ZIP trigger
+      document.getElementById('btn-zip-download').addEventListener('click', async () => {
+        showToast('Checking ZIP file...', true);
+        try {
+          const res = await fetch('/api/download-zip/');
+          if (res.headers.get('content-type') === 'application/json') {
+            const data = await res.json();
+            if (data.status === 'triggered') {
+              showToast(data.message, true);
+              pollTaskStatus(data.task_id);
+            }
+          } else {
+            // Serve ZIP download directly
+            window.location.href = '/api/download-zip/';
+          }
+        } catch (err) {
+          showToast('Failed to download ZIP file.', false);
+        }
+      });
+
+    });
+  </script>
+</body>
+</html>

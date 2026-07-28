@@ -1,0 +1,21 @@
+# Core
+Django==5.1
+python-decouple==3.8
+
+# Database
+psycopg2-binary==2.9.11
+
+# Image Processing
+Pillow==10.4.0
+
+# QR Code generation
+qrcode==7.4.2
+
+# PDF Generation
+reportlab==4.0.8
+
+# Excel Import/Export
+openpyxl==3.1.5
+
+# Static files in production
+whitenoise==6.7.0
