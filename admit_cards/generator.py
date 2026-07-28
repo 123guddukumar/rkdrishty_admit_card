@@ -40,12 +40,21 @@ def generate_admit_card_files(student, verification_url=None):
     Generates high-quality JPG and PDF admit cards for the given student.
     Returns: (jpg_content_file, pdf_content_file)
     """
-    template_path = os.path.join(settings.MEDIA_ROOT, 'templates', 'template.jpg')
-    if not os.path.exists(template_path):
-        # Fallback to project root if media folders are not fully setup
-        template_path = os.path.join(settings.BASE_DIR, 'template.jpg')
-        if not os.path.exists(template_path):
-            raise FileNotFoundError(f"Admit card template not found at {template_path}")
+    # Look for template.jpg or template.png (JPG has priority)
+    template_path = None
+    possible_paths = [
+        os.path.join(settings.MEDIA_ROOT, 'templates', 'template.jpg'),
+        os.path.join(settings.MEDIA_ROOT, 'templates', 'template.png'),
+        os.path.join(settings.BASE_DIR, 'template.jpg'),
+        os.path.join(settings.BASE_DIR, 'template.png'),
+    ]
+    for path in possible_paths:
+        if os.path.exists(path):
+            template_path = path
+            break
+
+    if not template_path:
+        raise FileNotFoundError("Admit card template (template.jpg or template.png) not found.")
 
     # 1. Open template and resize to A4 coordinate canvas (1000 x 1414)
     with Image.open(template_path) as base_img:
