@@ -209,9 +209,18 @@ def generate_admit_card_files(student, verification_url=None):
             except Exception as e:
                 print(f"Error drawing text field {field} for {student.name}: {e}")
 
-    # 7. Export JPG bytes in-memory
+    # 7. Export JPG bytes in-memory (Convert RGBA to RGB to support PNG templates)
+    if card_img.mode in ('RGBA', 'LA') or (card_img.mode == 'P' and 'transparency' in card_img.info):
+        rgb_card = Image.new("RGB", card_img.size, (255, 255, 255))
+        # Use alpha channel as mask if present
+        mask = card_img.split()[3] if card_img.mode == 'RGBA' else None
+        rgb_card.paste(card_img, mask=mask)
+        final_img = rgb_card
+    else:
+        final_img = card_img.convert('RGB')
+
     jpg_buffer = io.BytesIO()
-    card_img.save(jpg_buffer, format='JPEG', quality=95)
+    final_img.save(jpg_buffer, format='JPEG', quality=95)
     jpg_data = jpg_buffer.getvalue()
     
     # 8. Export PDF bytes in-memory using ReportLab
