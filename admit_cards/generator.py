@@ -130,7 +130,7 @@ def generate_admit_card_files(student, verification_url=None):
     try:
         green_color = (37, 162, 68)  # Forest Green
         if student.gender == 'Male':
-            male_coords = COORDINATES.get("male_checkbox", (715, 900))
+            male_coords = COORDINATES.get("male_checkbox", (715, 880))
             cx, cy = male_coords
             draw.line(
                 [(cx + 3, cy + 14), (cx + 10, cy + 21)],
@@ -144,7 +144,7 @@ def generate_admit_card_files(student, verification_url=None):
                 width=5
             )
         elif student.gender == 'Female':
-            female_coords = COORDINATES.get("female_checkbox", (825, 900))
+            female_coords = COORDINATES.get("female_checkbox", (825, 880))
             cx, cy = female_coords
             draw.line(
                 [(cx + 3, cy + 14), (cx + 10, cy + 21)],
@@ -164,7 +164,7 @@ def generate_admit_card_files(student, verification_url=None):
 
     # 6. Draw Student Details Text
     # Paint white rectangle over the address dotted line to remove it
-    draw.rectangle([340, 955, 930, 970], fill=(255, 255, 255))
+    draw.rectangle([340, 940, 930, 955], fill=(255, 255, 255))
 
     fields = {
         "name": student.name,

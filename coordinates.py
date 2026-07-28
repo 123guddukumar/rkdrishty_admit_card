@@ -2,18 +2,18 @@
 
 # Coordinates mapped on the 1000 x 1414 pixels (A4 aspect ratio) template
 COORDINATES = {
-    "name": (340, 520),
-    "father": (340, 575),
-    "mother": (340, 630),
-    "class": (340, 680),
-    "aadhaar": (340, 732),
-    "registration": (340, 785),
-    "mobile": (340, 835),
-    "dob": (340, 888),
-    "address": (340, 936),
+    "name": (340, 505),
+    "father": (340, 560),
+    "mother": (340, 615),
+    "class": (340, 665),
+    "aadhaar": (340, 717),
+    "registration": (340, 770),
+    "mobile": (340, 820),
+    "dob": (340, 873),
+    "address": (340, 921),
     "photo": (50, 257),
-    "male_checkbox": (715, 895),
-    "female_checkbox": (825, 895)
+    "male_checkbox": (715, 880),
+    "female_checkbox": (825, 880)
 }
 
 # General settings for dynamic rendering
