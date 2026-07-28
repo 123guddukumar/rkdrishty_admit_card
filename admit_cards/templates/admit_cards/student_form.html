@@ -143,6 +143,19 @@
         </a>
       </div>
 
+      {% if messages %}
+        <div class="row mb-3">
+          <div class="col-12">
+            {% for message in messages %}
+              <div class="alert alert-{% if message.tags == 'error' %}danger{% else %}{{ message.tags }}{% endif %} alert-dismissible fade show" role="alert">
+                <i class="fa-solid fa-triangle-exclamation me-2"></i> {{ message }}
+                <button type="button" class="btn-close" data-bs-alert="close" data-bs-dismiss="alert" aria-label="Close"></button>
+              </div>
+            {% endfor %}
+          </div>
+        </div>
+      {% endif %}
+
       <form method="POST" enctype="multipart/form-data">
         {% csrf_token %}
         <div class="row g-3">

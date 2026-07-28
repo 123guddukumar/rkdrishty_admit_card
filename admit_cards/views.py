@@ -176,11 +176,22 @@ def dashboard(request):
     }
     return render(request, 'admit_cards/dashboard.html', context)
 
+def parse_date_robust(date_str):
+    if not date_str:
+        return None
+    date_str = date_str.strip()
+    for fmt in ('%Y-%m-%d', '%d/%m/%Y', '%d-%m-%Y', '%Y/%m/%d'):
+        try:
+            return datetime.strptime(date_str, fmt).date()
+        except ValueError:
+            continue
+    raise ValueError(f"Invalid date format: '{date_str}'. Please use YYYY-MM-DD or DD/MM/YYYY.")
+
 def add_student(request):
     if request.method == 'POST':
         try:
             dob_str = request.POST.get('dob')
-            dob_val = datetime.strptime(dob_str, '%Y-%m-%d').date() if dob_str else None
+            dob_val = parse_date_robust(dob_str)
             
             student = Student.objects.create(
                 name=request.POST.get('name'),
@@ -220,7 +231,7 @@ def edit_student(request, pk):
             
             dob_str = request.POST.get('dob')
             if dob_str:
-                student.dob = datetime.strptime(dob_str, '%Y-%m-%d').date()
+                student.dob = parse_date_robust(dob_str)
                 
             student.gender = request.POST.get('gender')
             student.address = request.POST.get('address')
