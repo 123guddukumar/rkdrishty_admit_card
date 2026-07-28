@@ -14,11 +14,11 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECURITY SETTINGS (loaded from .env)
 # ==================================================
 
-SECRET_KEY = config("SECRET_KEY", default="django-insecure-pythonanywhere-fallback-key-9f362a0")
+SECRET_KEY = config("SECRET_KEY")
 
-DEBUG = config("DEBUG", default=True, cast=bool)
+DEBUG = config("DEBUG", default=False, cast=bool)
 
-ALLOWED_HOSTS = config("ALLOWED_HOSTS", default="*", cast=Csv())
+ALLOWED_HOSTS = config("ALLOWED_HOSTS", default="localhost,127.0.0.1", cast=Csv())
 
 
 # ==================================================
