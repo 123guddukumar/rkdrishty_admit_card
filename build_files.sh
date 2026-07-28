@@ -1,6 +1,6 @@
 #!/bin/bash
-# Install Python dependencies first
-pip install -r requirements.txt
+# Install Django and dependencies inside the static build container
+python3 -m pip install -r requirements.txt
 
-# Collect static files for WhiteNoise
-python manage.py collectstatic --noinput
+# Run collectstatic with python3
+python3 manage.py collectstatic --noinput --clear
