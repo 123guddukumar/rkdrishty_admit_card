@@ -1,6 +1,9 @@
 #!/bin/bash
-# Install Django and dependencies inside the static build container
-python3 -m pip install -r requirements.txt
-
-# Run collectstatic with python3
-python3 manage.py collectstatic --noinput --clear
+# Create a temporary virtual environment
+python3 -m venv venv
+# Activate the virtual environment
+source venv/bin/activate
+# Install requirements in the virtual environment
+pip install -r requirements.txt
+# Run collectstatic
+python manage.py collectstatic --noinput --clear
