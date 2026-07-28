@@ -19,3 +19,6 @@ openpyxl==3.1.5
 
 # Static files in production
 whitenoise==6.7.0
+
+# WSGI Server for production (Render)
+gunicorn==22.0.0
