@@ -236,56 +236,48 @@
       border-bottom: none;
     }
 
-    /* Responsive Table to Cards styling for Mobile screens */
-    @media (max-width: 991px) {
-      .premium-table, .premium-table thead, .premium-table tbody, .premium-table th, .premium-table td, .premium-table tr {
-        display: block;
+    /* Premium Student List View Styling */
+    .student-list-container {
+      max-height: 60vh;
+      overflow-y: auto;
+      padding-right: 6px;
+    }
+    
+    /* Scrollbar */
+    .student-list-container::-webkit-scrollbar {
+      width: 6px;
+    }
+    .student-list-container::-webkit-scrollbar-track {
+      background: rgba(255, 255, 255, 0.01);
+      border-radius: 4px;
+    }
+    .student-list-container::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 4px;
+    }
+    .student-list-container::-webkit-scrollbar-thumb:hover {
+      background: rgba(255, 255, 255, 0.2);
+    }
+
+    .student-list-item {
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 16px;
+      transition: all 0.2s;
+    }
+    .student-list-item:hover {
+      background: rgba(255, 255, 255, 0.04);
+      border-color: rgba(240, 192, 64, 0.2);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 15px -3px rgba(0, 0, 0, 0.3);
+    }
+
+    @media (max-width: 768px) {
+      .student-list-item {
+        padding: 14px;
       }
-      .premium-table thead {
-        display: none;
-      }
-      .premium-table tbody tr {
-        background-color: rgba(255, 255, 255, 0.02);
-        border: 1px solid var(--border-color);
-        border-radius: 12px;
-        margin-bottom: 16px;
-        padding: 16px 12px;
-      }
-      .premium-table td {
-        padding: 10px 0;
-        border: none;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        text-align: right;
-        font-size: 0.9rem;
-      }
-      .premium-table td:first-child {
-        justify-content: flex-start;
-        text-align: left;
-        border-bottom: 1px solid var(--border-color);
-        padding-bottom: 12px;
-        margin-bottom: 8px;
-        width: 100%;
-        display: flex;
-      }
-      .premium-table td::before {
-        content: attr(data-label);
-        font-weight: 600;
-        color: var(--text-muted);
-        text-transform: uppercase;
-        font-size: 0.72rem;
-        text-align: left;
-        margin-right: 8px;
-      }
-      .premium-table td:first-child::before {
-        display: none;
-      }
-      .premium-table td:last-child {
-        justify-content: flex-end;
-        border-top: 1px solid var(--border-color);
-        padding-top: 12px;
-        margin-top: 8px;
+      .student-list-item > div {
         width: 100%;
       }
     }
@@ -312,12 +304,14 @@
   <!-- NAVBAR -->
   <nav class="premium-navbar">
     <div class="container-fluid px-3 px-md-5">
-      <div class="d-flex flex-column flex-md-row align-items-center justify-content-between gap-3">
+      <div class="d-flex align-items-center justify-content-between">
         <a href="{% url 'dashboard' %}" class="d-flex align-items-center text-decoration-none">
           <span class="fs-4 fw-bold text-white me-2">🎓 Drishti</span>
           <span class="fs-6 text-muted border-start border-secondary ps-2 d-none d-sm-inline">Admit Card Panel</span>
         </a>
-        <div class="d-flex flex-wrap gap-2 justify-content-center">
+        
+        <!-- Actions: Desktop -->
+        <div class="d-none d-md-flex gap-2">
           <a href="{% url 'add_student' %}" class="btn btn-premium btn-sm py-2 px-3">
             <i class="fa-solid fa-plus me-1"></i> Add Student
           </a>
@@ -327,6 +321,33 @@
           <a href="{% url 'export_excel' %}" class="btn btn-premium-secondary btn-sm py-2 px-3">
             <i class="fa-solid fa-file-export me-1"></i> Excel Export
           </a>
+        </div>
+
+        <!-- Actions: Mobile (3-Dot Dropdown Menu) -->
+        <div class="d-flex d-md-none dropdown">
+          <button class="btn btn-premium-secondary rounded-circle p-0" type="button" data-bs-toggle="dropdown" aria-expanded="false" style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;">
+            <i class="fa-solid fa-ellipsis-vertical fs-5"></i>
+          </button>
+          <ul class="dropdown-menu dropdown-menu-end dropdown-menu-dark bg-secondary p-2" style="border: 1px solid var(--border-color); border-radius: 12px; box-shadow: var(--shadow-premium);">
+            <li>
+              <a class="dropdown-item py-2 px-3 rounded" href="{% url 'add_student' %}">
+                <i class="fa-solid fa-plus me-2 text-warning"></i> Add Student
+              </a>
+            </li>
+            <li>
+              <hr class="dropdown-divider border-secondary my-1">
+            </li>
+            <li>
+              <button class="dropdown-item py-2 px-3 rounded text-start" data-bs-toggle="modal" data-bs-target="#importModal">
+                <i class="fa-solid fa-file-import me-2 text-info"></i> Excel Import
+              </button>
+            </li>
+            <li>
+              <a class="dropdown-item py-2 px-3 rounded" href="{% url 'export_excel' %}">
+                <i class="fa-solid fa-file-export me-2 text-success"></i> Excel Export
+              </a>
+            </li>
+          </ul>
         </div>
       </div>
     </div>
@@ -458,86 +479,82 @@
             </div>
           </form>
 
-          <!-- STUDENTS TABLE -->
-          <div class="table-responsive" style="max-height: 60vh; overflow-y: auto;">
-            <table class="premium-table">
-              <thead>
-                <tr>
-                  <th>Student Info</th>
-                  <th>Reg. Number</th>
-                  <th>Class / Batch</th>
-                  <th>Gender / DOB</th>
-                  <th>Admit Card Files</th>
-                  <th class="text-end">Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {% for s in students %}
-                  <tr>
-                    <td>
-                      <div class="d-flex align-items-center">
-                        <div class="me-3">
-                          {% if s.photo %}
-                            <img src="{{ s.photo.url }}" class="rounded-circle border border-secondary" style="width: 44px; height: 44px; object-fit: cover;">
-                          {% else %}
-                            <div class="rounded-circle bg-secondary d-flex align-items-center justify-content-center text-white" style="width: 44px; height: 44px;">
-                              <i class="fa-solid fa-user"></i>
-                            </div>
-                          {% endif %}
+          <!-- STUDENTS LIST VIEW -->
+          <div class="student-list-container">
+            <div class="student-list">
+              {% for s in students %}
+                <div class="student-list-item mb-3 d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3">
+                  <!-- Left: Profile & Info -->
+                  <div class="d-flex align-items-center gap-3">
+                    <div class="avatar-container flex-shrink-0">
+                      {% if s.photo %}
+                        <img src="{{ s.photo.url }}" class="rounded-circle border border-secondary" style="width: 48px; height: 48px; object-fit: cover;">
+                      {% else %}
+                        <div class="rounded-circle bg-secondary d-flex align-items-center justify-content-center text-white" style="width: 48px; height: 48px;">
+                          <i class="fa-solid fa-user"></i>
                         </div>
-                        <div>
-                          <div class="fw-bold text-white">{{ s.name }}</div>
-                          <div class="text-muted small">F: {{ s.father_name }}</div>
-                        </div>
+                      {% endif %}
+                    </div>
+                    <div>
+                      <div class="fw-bold text-white fs-6">{{ s.name }}</div>
+                      <div class="d-flex flex-wrap gap-2 align-items-center mt-1">
+                        <span class="text-muted small">F: {{ s.father_name }}</span>
+                        <span class="text-secondary d-none d-sm-inline">•</span>
+                        <code class="text-warning small fw-semibold">{{ s.registration_number }}</code>
                       </div>
-                    </td>
-                    <td data-label="Reg. Number">
-                      <code class="text-warning fw-semibold">{{ s.registration_number }}</code>
-                    </td>
-                    <td data-label="Class / Batch">
-                      <div>{{ s.student_class }}</div>
-                      <div class="text-muted small">{{ s.batch }}</div>
-                    </td>
-                    <td data-label="Gender / DOB">
-                      <div>{{ s.gender }}</div>
-                      <div class="text-muted small">{{ s.dob|date:"d/m/Y" }}</div>
-                    </td>
-                    <td data-label="Admit Card">
+                    </div>
+                  </div>
+
+                  <!-- Middle: Class/Batch & Gender/DOB -->
+                  <div class="d-flex align-items-center gap-4 flex-wrap justify-content-start justify-content-md-center">
+                    <div>
+                      <div class="text-muted" style="font-size: 0.7rem; text-transform: uppercase; font-weight: 600; letter-spacing: 0.5px;">Class & Batch</div>
+                      <div class="text-white small fw-semibold mt-1">{{ s.student_class }} <span class="text-muted">({{ s.batch }})</span></div>
+                    </div>
+                    <div>
+                      <div class="text-muted" style="font-size: 0.7rem; text-transform: uppercase; font-weight: 600; letter-spacing: 0.5px;">Gender & DOB</div>
+                      <div class="text-white small mt-1">{{ s.dob|date:"d/m/Y" }} <span class="text-muted">({{ s.gender }})</span></div>
+                    </div>
+                  </div>
+
+                  <!-- Right: Status & Downloads -->
+                  <div class="d-flex align-items-center gap-3 flex-wrap justify-content-start justify-content-md-center">
+                    <div>
                       {% if s.is_generated %}
-                        <span class="premium-badge badge-generated mb-2 d-inline-block">Generated</span>
-                        <div class="d-flex gap-2 justify-content-end justify-content-lg-start">
-                          <a href="{% url 'download_card_api' %}?student_id={{ s.id }}&format=jpg" class="btn btn-sm btn-outline-info py-0 px-2" style="font-size: 0.72rem;"><i class="fa-solid fa-image"></i> JPG</a>
-                          <a href="{% url 'download_card_api' %}?student_id={{ s.id }}&format=pdf" class="btn btn-sm btn-outline-danger py-0 px-2" style="font-size: 0.72rem;"><i class="fa-solid fa-file-pdf"></i> PDF</a>
-                        </div>
+                        <span class="premium-badge badge-generated">Generated</span>
                       {% else %}
                         <span class="premium-badge badge-pending">Pending</span>
                       {% endif %}
-                    </td>
-                    <td data-label="Actions" class="text-end">
-                      <div class="d-flex justify-content-end gap-2 flex-wrap">
-                        <button class="btn btn-sm btn-premium py-1 px-2 btn-generate-single" data-id="{{ s.id }}">
-                          <i class="fa-solid fa-wand-magic-sparkles"></i> Generate
-                        </button>
-                        {% if s.is_generated %}
-                          <button class="btn btn-sm btn-premium-secondary py-1 px-2 btn-preview" data-name="{{ s.name }}" data-url="{{ s.card_jpg.url }}">
-                            <i class="fa-solid fa-eye"></i> Preview
-                          </button>
-                        {% endif %}
-                        <a href="{% url 'edit_student' s.pk %}" class="btn btn-sm btn-premium-secondary py-1 px-2"><i class="fa-solid fa-pen-to-square"></i></a>
-                        <a href="{% url 'delete_student' s.pk %}" class="btn btn-sm btn-premium-secondary py-1 px-2 text-danger" onclick="return confirm('Are you sure you want to delete this student?')"><i class="fa-solid fa-trash-can"></i></a>
+                    </div>
+                    {% if s.is_generated %}
+                      <div class="d-flex gap-1.5">
+                        <a href="{% url 'download_card_api' %}?student_id={{ s.id }}&format=jpg" class="btn btn-sm btn-outline-info py-1 px-2.5" style="font-size: 0.72rem; font-weight: 500;"><i class="fa-solid fa-image me-1"></i> JPG</a>
+                        <a href="{% url 'download_card_api' %}?student_id={{ s.id }}&format=pdf" class="btn btn-sm btn-outline-danger py-1 px-2.5" style="font-size: 0.72rem; font-weight: 500;"><i class="fa-solid fa-file-pdf me-1"></i> PDF</a>
                       </div>
-                    </td>
-                  </tr>
-                {% empty %}
-                  <tr>
-                    <td colspan="6" class="text-center py-5 text-muted">
-                      <i class="fa-solid fa-inbox fs-3 mb-3 d-block"></i>
-                      No student records found in the database.
-                    </td>
-                  </tr>
-                {% endfor %}
-              </tbody>
-            </table>
+                    {% endif %}
+                  </div>
+
+                  <!-- Actions -->
+                  <div class="d-flex justify-content-end gap-2 flex-wrap border-top border-secondary pt-3 pt-md-0 border-md-top-0 mt-2 mt-md-0 justify-content-md-end w-100 w-md-auto">
+                    <button class="btn btn-sm btn-premium py-1.5 px-3 btn-generate-single" data-id="{{ s.id }}">
+                      <i class="fa-solid fa-wand-magic-sparkles me-1"></i> Generate
+                    </button>
+                    {% if s.is_generated %}
+                      <button class="btn btn-sm btn-premium-secondary py-1.5 px-3 btn-preview" data-name="{{ s.name }}" data-url="{{ s.card_jpg.url }}">
+                        <i class="fa-solid fa-eye me-1"></i> Preview
+                      </button>
+                    {% endif %}
+                    <a href="{% url 'edit_student' s.pk %}" class="btn btn-sm btn-premium-secondary py-1.5 px-2.5"><i class="fa-solid fa-pen-to-square"></i></a>
+                    <a href="{% url 'delete_student' s.pk %}" class="btn btn-sm btn-premium-secondary py-1.5 px-2.5 text-danger" onclick="return confirm('Are you sure you want to delete this student?')"><i class="fa-solid fa-trash-can"></i></a>
+                  </div>
+                </div>
+              {% empty %}
+                <div class="text-center py-5 text-muted">
+                  <i class="fa-solid fa-inbox fs-3 mb-3 d-block"></i>
+                  No student records found in the database.
+                </div>
+              {% endfor %}
+            </div>
           </div>
         </div>
       </div>
