@@ -275,11 +275,14 @@
 
     @media (max-width: 768px) {
       .student-list-item {
-        padding: 14px;
+        padding: 12px 14px;
       }
-      .student-list-item > div {
-        width: 100%;
-      }
+      /* Container adjustments on mobile */
+      .container-fluid.px-3 { padding-left: 12px !important; padding-right: 12px !important; }
+      /* Compact stat cards on mobile */
+      .glass-card { padding: 14px 16px; }
+      /* Better button wrapping */
+      .d-flex.flex-wrap.gap-1 { gap: 5px !important; }
     }
 
     /* Print styling */
@@ -303,51 +306,49 @@
 
   <!-- NAVBAR -->
   <nav class="premium-navbar">
-    <div class="container-fluid px-3 px-md-5">
-      <div class="d-flex align-items-center justify-content-between">
-        <a href="{% url 'dashboard' %}" class="d-flex align-items-center text-decoration-none">
-          <span class="fs-4 fw-bold text-white me-2">🎓 Drishti</span>
-          <span class="fs-6 text-muted border-start border-secondary ps-2 d-none d-sm-inline">Admit Card Panel</span>
+    <div class="container-fluid px-3 px-md-4">
+      <div class="d-flex align-items-center justify-content-between gap-2">
+        <a href="{% url 'dashboard' %}" class="d-flex align-items-center text-decoration-none gap-2">
+          <span class="fs-5 fw-bold text-white" style="font-family:'Poppins',sans-serif;">🎓 Drishti</span>
+          <span class="text-muted border-start border-secondary ps-2 d-none d-sm-inline" style="font-size:.75rem;">Admit Card Panel</span>
         </a>
-        
-        <!-- Actions: Desktop -->
-        <div class="d-none d-md-flex gap-2">
-          <a href="{% url 'add_student' %}" class="btn btn-premium btn-sm py-2 px-3">
-            <i class="fa-solid fa-plus me-1"></i> Add Student
-          </a>
-          <button class="btn btn-premium-secondary btn-sm py-2 px-3" data-bs-toggle="modal" data-bs-target="#importModal">
-            <i class="fa-solid fa-file-import me-1"></i> Excel Import
-          </button>
-          <a href="{% url 'export_excel' %}" class="btn btn-premium-secondary btn-sm py-2 px-3">
-            <i class="fa-solid fa-file-export me-1"></i> Excel Export
-          </a>
-        </div>
 
-        <!-- Actions: Mobile (3-Dot Dropdown Menu) -->
-        <div class="d-flex d-md-none dropdown">
-          <button class="btn btn-premium-secondary rounded-circle p-0" type="button" data-bs-toggle="dropdown" aria-expanded="false" style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;">
-            <i class="fa-solid fa-ellipsis-vertical fs-5"></i>
-          </button>
-          <ul class="dropdown-menu dropdown-menu-end dropdown-menu-dark bg-secondary p-2" style="border: 1px solid var(--border-color); border-radius: 12px; box-shadow: var(--shadow-premium);">
-            <li>
-              <a class="dropdown-item py-2 px-3 rounded" href="{% url 'add_student' %}">
-                <i class="fa-solid fa-plus me-2 text-warning"></i> Add Student
-              </a>
-            </li>
-            <li>
-              <hr class="dropdown-divider border-secondary my-1">
-            </li>
-            <li>
-              <button class="dropdown-item py-2 px-3 rounded text-start" data-bs-toggle="modal" data-bs-target="#importModal">
-                <i class="fa-solid fa-file-import me-2 text-info"></i> Excel Import
-              </button>
-            </li>
-            <li>
-              <a class="dropdown-item py-2 px-3 rounded" href="{% url 'export_excel' %}">
-                <i class="fa-solid fa-file-export me-2 text-success"></i> Excel Export
-              </a>
-            </li>
-          </ul>
+        <div class="d-flex align-items-center gap-2">
+          <!-- Add Student: ALWAYS VISIBLE on all screens -->
+          <a href="{% url 'add_student' %}" class="btn btn-premium btn-sm" id="btn-add-student-nav">
+            <i class="fa-solid fa-plus me-1"></i>
+            <span class="d-none d-sm-inline">Add Student</span>
+            <span class="d-inline d-sm-none">Add</span>
+          </a>
+
+          <!-- Desktop extra actions -->
+          <div class="d-none d-md-flex gap-2">
+            <button class="btn btn-premium-secondary btn-sm py-2 px-3" data-bs-toggle="modal" data-bs-target="#importModal">
+              <i class="fa-solid fa-file-import me-1"></i> Excel Import
+            </button>
+            <a href="{% url 'export_excel' %}" class="btn btn-premium-secondary btn-sm py-2 px-3">
+              <i class="fa-solid fa-file-export me-1"></i> Excel Export
+            </a>
+          </div>
+
+          <!-- Mobile: 3-dot for Import/Export only -->
+          <div class="d-flex d-md-none dropdown">
+            <button class="btn btn-premium-secondary rounded-circle p-0" type="button" data-bs-toggle="dropdown" aria-expanded="false" style="width:40px;height:40px;display:flex;align-items:center;justify-content:center;">
+              <i class="fa-solid fa-ellipsis-vertical fs-5"></i>
+            </button>
+            <ul class="dropdown-menu dropdown-menu-end dropdown-menu-dark bg-secondary p-2" style="border:1px solid var(--border-color);border-radius:12px;box-shadow:var(--shadow-premium);min-width:170px;">
+              <li>
+                <button class="dropdown-item py-2 px-3 rounded text-start" data-bs-toggle="modal" data-bs-target="#importModal">
+                  <i class="fa-solid fa-file-import me-2 text-info"></i> Excel Import
+                </button>
+              </li>
+              <li>
+                <a class="dropdown-item py-2 px-3 rounded" href="{% url 'export_excel' %}">
+                  <i class="fa-solid fa-file-export me-2 text-success"></i> Excel Export
+                </a>
+              </li>
+            </ul>
+          </div>
         </div>
       </div>
     </div>
@@ -552,49 +553,56 @@
                     </div>
                   </div>
 
-                  <!-- Mobile Layout (shows avatar, name, and download buttons in small height) -->
-                  <div class="d-flex d-md-none align-items-center justify-content-between w-100">
-                    <div class="d-flex align-items-center gap-2.5 flex-grow-1 btn-student-details" 
-                         data-id="{{ s.id }}" 
-                         data-name="{{ s.name }}"
-                         data-father="{{ s.father_name }}"
-                         data-mother="{{ s.mother_name }}"
-                         data-class="{{ s.student_class }}"
-                         data-batch="{{ s.batch }}"
-                         data-aadhaar="{{ s.aadhaar_number }}"
-                         data-reg="{{ s.registration_number }}"
-                         data-mobile="{{ s.mobile_number }}"
-                         data-dob="{{ s.dob|date:'d/m/Y' }}"
-                         data-gender="{{ s.gender }}"
-                         data-address="{{ s.address }}"
-                         data-photo="{% if s.photo %}{{ s.photo.url }}{% endif %}"
-                         data-sig="{% if s.signature %}{{ s.signature.url }}{% endif %}"
-                         data-generated="{{ s.is_generated|yesno:'true,false' }}"
-                         data-card-url="{% if s.card_jpg %}{{ s.card_jpg.url }}{% endif %}"
-                         style="cursor: pointer;">
-                      <div class="avatar-container flex-shrink-0">
+                  <!-- Mobile Layout — Full action buttons -->
+                  <div class="d-flex d-md-none flex-column w-100" style="gap:10px;">
+                    <!-- Top row: avatar + name + status -->
+                    <div class="d-flex align-items-center gap-2">
+                      <div class="flex-shrink-0">
                         {% if s.photo %}
-                          <img src="{{ s.photo.url }}" class="rounded-circle border border-secondary" style="width: 36px; height: 36px; object-fit: cover;">
+                          <img src="{{ s.photo.url }}" class="rounded-circle border border-secondary" style="width:38px;height:38px;object-fit:cover;">
                         {% else %}
-                          <div class="rounded-circle bg-secondary d-flex align-items-center justify-content-center text-white" style="width: 36px; height: 36px;">
-                            <i class="fa-solid fa-user" style="font-size: 0.85rem;"></i>
+                          <div class="rounded-circle bg-secondary d-flex align-items-center justify-content-center text-white" style="width:38px;height:38px;">
+                            <i class="fa-solid fa-user" style="font-size:.85rem;"></i>
                           </div>
                         {% endif %}
                       </div>
-                      <div>
-                        <div class="fw-bold text-white" style="font-size: 0.85rem; line-height: 1.2;">{{ s.name }}</div>
-                        <div class="text-muted mt-0.5" style="font-size: 0.72rem;">Reg: {{ s.registration_number }}</div>
+                      <div class="flex-grow-1">
+                        <div class="fw-bold text-white" style="font-size:.87rem;line-height:1.3;">{{ s.name }}</div>
+                        <div class="d-flex align-items-center gap-2 mt-1">
+                          <code class="text-warning" style="font-size:.68rem;">{{ s.registration_number }}</code>
+                          <span class="text-muted" style="font-size:.68rem;">{{ s.student_class }} · {{ s.batch }}</span>
+                        </div>
+                      </div>
+                      <div class="flex-shrink-0">
+                        {% if s.is_generated %}
+                          <span class="premium-badge badge-generated" style="font-size:.65rem;">&#x2713; Done</span>
+                        {% else %}
+                          <span class="premium-badge badge-pending" style="font-size:.65rem;">Pending</span>
+                        {% endif %}
                       </div>
                     </div>
-
-                    <!-- Downloads: Keep it on the right side of the list item -->
-                    <div class="d-flex gap-1.5 align-items-center flex-shrink-0 ms-2">
+                    <!-- Action buttons row -->
+                    <div class="d-flex flex-wrap gap-1">
+                      <button class="btn btn-sm btn-premium py-1 px-2 btn-generate-single" data-id="{{ s.id }}" style="font-size:.72rem;">
+                        <i class="fa-solid fa-wand-magic-sparkles me-1"></i>Generate
+                      </button>
                       {% if s.is_generated %}
-                        <a href="{% url 'download_card_api' %}?student_id={{ s.id }}&format=jpg" class="btn btn-sm btn-outline-info p-1 px-2.5" style="font-size: 0.72rem;"><i class="fa-solid fa-image"></i> JPG</a>
-                        <a href="{% url 'download_card_api' %}?student_id={{ s.id }}&format=pdf" class="btn btn-sm btn-outline-danger p-1 px-2.5" style="font-size: 0.72rem;"><i class="fa-solid fa-file-pdf"></i> PDF</a>
-                      {% else %}
-                        <span class="premium-badge badge-pending py-1 px-2.5" style="font-size: 0.68rem; border-radius: 4px;">Pending</span>
+                        <button class="btn btn-sm btn-premium-secondary py-1 px-2 btn-preview" data-name="{{ s.name }}" data-url="{{ s.card_jpg.url }}" style="font-size:.72rem;">
+                          <i class="fa-solid fa-eye me-1"></i>Preview
+                        </button>
+                        <a href="{% url 'download_card_api' %}?student_id={{ s.id }}&format=jpg" class="btn btn-sm btn-outline-info py-1 px-2" style="font-size:.72rem;">
+                          <i class="fa-solid fa-image me-1"></i>JPG
+                        </a>
+                        <a href="{% url 'download_card_api' %}?student_id={{ s.id }}&format=pdf" class="btn btn-sm btn-outline-danger py-1 px-2" style="font-size:.72rem;">
+                          <i class="fa-solid fa-file-pdf me-1"></i>PDF
+                        </a>
                       {% endif %}
+                      <a href="{% url 'edit_student' s.pk %}" class="btn btn-sm btn-premium-secondary py-1 px-2" style="font-size:.72rem;">
+                        <i class="fa-solid fa-pen-to-square me-1"></i>Edit
+                      </a>
+                      <a href="{% url 'delete_student' s.pk %}" class="btn btn-sm btn-premium-secondary py-1 px-2 text-danger" onclick="return confirm('Delete {{ s.name }}?')" style="font-size:.72rem;">
+                        <i class="fa-solid fa-trash-can"></i>
+                      </a>
                     </div>
                   </div>
                 </div>
@@ -609,8 +617,8 @@
         </div>
       </div>
 
-      <!-- Activity Logs / Info -->
-      <div class="col-lg-3">
+      <!-- Activity Logs / Info — HIDDEN on mobile, only shown on lg+ -->
+      <div class="col-lg-3 d-none d-lg-block">
         <div class="glass-card h-100 d-flex flex-column">
           <h5 class="text-white mb-3"><i class="fa-solid fa-chart-line text-warning me-2"></i> Activity Logs</h5>
           <div class="flex-grow-1 overflow-y-auto" style="max-height: 40vh;">
@@ -858,8 +866,8 @@
           statusBadge.innerText = generated ? 'Generated' : 'Pending';
 
           // Action URL setup for buttons
-          document.getElementById('detail-btn-edit').href = `/student/${id}/edit/`;
-          document.getElementById('detail-btn-delete').href = `/student/${id}/delete/`;
+          document.getElementById('detail-btn-edit').href = `/student/edit/${id}/`;
+          document.getElementById('detail-btn-delete').href = `/student/delete/${id}/`;
 
           // Generate button setup
           const genBtn = document.getElementById('detail-btn-generate');
@@ -968,44 +976,6 @@
             btn.disabled = false;
           }
         });
-      });
-
-      // Generate All Cards trigger
-      document.getElementById('btn-generate-all').addEventListener('click', async () => {
-        if (!confirm('Are you sure you want to generate admit cards for all pending students? This runs in the background.')) return;
-        
-        try {
-          const res = await fetch('/api/generate-all/', { method: 'POST' });
-          const data = await res.json();
-          if (data.status === 'success') {
-            showToast(data.message, true);
-            pollTaskStatus(data.task_id);
-          } else {
-            showToast(data.message, false);
-          }
-        } catch (err) {
-          showToast('Failed to trigger bulk generation.', false);
-        }
-      });
-
-      // Download ZIP trigger
-      document.getElementById('btn-zip-download').addEventListener('click', async () => {
-        showToast('Checking ZIP file...', true);
-        try {
-          const res = await fetch('/api/download-zip/');
-          if (res.headers.get('content-type') === 'application/json') {
-            const data = await res.json();
-            if (data.status === 'triggered') {
-              showToast(data.message, true);
-              pollTaskStatus(data.task_id);
-            }
-          } else {
-            // Serve ZIP download directly
-            window.location.href = '/api/download-zip/';
-          }
-        } catch (err) {
-          showToast('Failed to download ZIP file.', false);
-        }
       });
 
     });

@@ -3,309 +3,379 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Drishti Admit Card System - {{ action }} Student</title>
-  <!-- Google Fonts -->
+  <title>Drishti — {{ action }} Student</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@500;600;700;800&display=swap" rel="stylesheet">
-  <!-- Bootstrap 5 CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-  <!-- FontAwesome Icons -->
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-  <!-- Custom CSS for Premium Dark UI -->
   <style>
     :root {
-      --bg-primary: #080f1e;
-      --bg-secondary: #0f1a30;
-      --bg-card: rgba(255, 255, 255, 0.03);
-      --border-color: rgba(255, 255, 255, 0.08);
-      --accent-color: #f0c040;
-      --accent-hover: #d4a017;
-      --text-main: #f8fafc;
-      --text-muted: #94a3b8;
-      --success: #10b981;
-      --shadow-premium: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+      --bg: #080f1e; --bg2: #0d1629;
+      --card: rgba(255,255,255,0.035);
+      --border: rgba(255,255,255,0.09);
+      --accent: #f0c040; --accent2: #d4a017;
+      --text: #f8fafc; --muted: #94a3b8;
+      --success: #10b981; --danger: #ef4444;
+      --radius: 14px; --radius-sm: 10px;
     }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+    html{scroll-behavior:smooth;}
+    body{font-family:"Inter",sans-serif;background:var(--bg);color:var(--text);min-height:100vh;padding-bottom:90px;}
+    @media(min-width:768px){body{padding-bottom:20px;}}
+    h1,h2,h3,h4,h5,h6{font-family:"Poppins",sans-serif;font-weight:700;}
 
-    body {
-      font-family: 'Inter', sans-serif;
-      background-color: var(--bg-primary);
-      color: var(--text-main);
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      padding: 40px 14px;
-    }
+    /* TOP BAR */
+    .top-bar{background:rgba(13,22,41,.93);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);
+      padding:13px 16px;position:sticky;top:0;z-index:100;display:flex;align-items:center;
+      justify-content:space-between;gap:12px;}
+    .tb-left{display:flex;align-items:center;gap:12px;}
+    .back-btn{width:38px;height:38px;border-radius:10px;background:rgba(255,255,255,.07);
+      border:1px solid var(--border);color:var(--text);display:flex;align-items:center;
+      justify-content:center;text-decoration:none;transition:all .2s;flex-shrink:0;}
+    .back-btn:hover{background:rgba(255,255,255,.15);color:#fff;}
+    .tb-title{font-family:"Poppins",sans-serif;font-weight:700;font-size:.97rem;color:#fff;line-height:1.2;}
+    .tb-sub{font-size:.71rem;color:var(--muted);}
+    .btn-save-top{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#080f1e;
+      border:none;font-weight:700;border-radius:10px;padding:9px 20px;font-size:.875rem;
+      cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:6px;white-space:nowrap;}
+    .btn-save-top:hover{transform:translateY(-1px);box-shadow:0 6px 18px rgba(240,192,64,.35);}
 
-    h1, h2, h3, h4, h5, h6 {
-      font-family: 'Poppins', sans-serif;
-      font-weight: 700;
-    }
+    /* WRAP */
+    .form-wrap{max-width:800px;margin:0 auto;padding:18px 14px;}
+    @media(min-width:576px){.form-wrap{padding:24px 20px;}}
+    @media(min-width:768px){.form-wrap{padding:30px 24px;}}
 
-    .form-container {
-      max-width: 800px;
-      margin: 0 auto;
-      width: 100%;
-    }
+    /* MESSAGES */
+    .msg-alert{border-radius:var(--radius-sm);padding:13px 16px;margin-bottom:14px;
+      display:flex;align-items:flex-start;gap:10px;font-size:.875rem;}
+    .msg-alert.success{background:rgba(16,185,129,.12);border:1px solid rgba(16,185,129,.25);color:#6ee7b7;}
+    .msg-alert.error{background:rgba(239,68,68,.12);border:1px solid rgba(239,68,68,.25);color:#fca5a5;}
 
-    .glass-card {
-      background: var(--bg-card);
-      backdrop-filter: blur(12px);
-      border: 1px solid var(--border-color);
-      border-radius: 18px;
-      padding: 32px;
-      box-shadow: var(--shadow-premium);
-    }
+    /* SECTION CARD */
+    .section-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);
+      padding:18px;margin-bottom:12px;transition:border-color .2s;animation:slideUp .35s ease both;}
+    .section-card:focus-within{border-color:rgba(240,192,64,.28);}
+    .section-card:nth-child(1){animation-delay:.03s;}
+    .section-card:nth-child(2){animation-delay:.08s;}
+    .section-card:nth-child(3){animation-delay:.13s;}
+    .section-card:nth-child(4){animation-delay:.18s;}
+    @media(min-width:576px){.section-card{padding:22px;}}
 
-    .premium-input {
-      background-color: rgba(255, 255, 255, 0.04);
-      border: 1px solid var(--border-color);
-      color: var(--text-main);
-      border-radius: 10px;
-      padding: 10px 14px;
-      font-size: 0.9rem;
-      transition: all 0.2s;
-    }
-    .premium-input:focus {
-      background-color: rgba(255, 255, 255, 0.07);
-      border-color: var(--accent-color);
-      box-shadow: 0 0 10px rgba(240, 192, 64, 0.15);
-      color: #fff;
-      outline: none;
-    }
-    .premium-input::placeholder {
-      color: var(--text-muted);
-    }
+    .sec-header{display:flex;align-items:center;gap:10px;margin-bottom:16px;
+      padding-bottom:14px;border-bottom:1px solid var(--border);}
+    .sec-icon{width:36px;height:36px;border-radius:9px;display:flex;align-items:center;
+      justify-content:center;font-size:.9rem;flex-shrink:0;}
+    .ic-y{background:rgba(240,192,64,.12);color:var(--accent);}
+    .ic-b{background:rgba(59,130,246,.12);color:#60a5fa;}
+    .ic-g{background:rgba(16,185,129,.12);color:var(--success);}
+    .ic-p{background:rgba(168,85,247,.12);color:#c084fc;}
+    .sec-title{font-size:.93rem;font-weight:700;color:#fff;}
+    .sec-sub{font-size:.71rem;color:var(--muted);margin-top:1px;}
 
-    .form-label {
-      font-size: 0.78rem;
-      font-weight: 600;
-      color: var(--text-muted);
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      margin-bottom: 6px;
-    }
+    /* FIELDS */
+    .field-group{margin-bottom:14px;}
+    .field-group:last-child{margin-bottom:0;}
+    .f-label{display:flex;align-items:center;gap:5px;font-size:.73rem;font-weight:600;
+      color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px;}
+    .f-label i{font-size:.68rem;}
+    .req::after{content:" *";color:var(--accent);font-weight:700;}
+    .f-input{width:100%;background:rgba(255,255,255,.04);border:1px solid var(--border);
+      color:var(--text);border-radius:var(--radius-sm);padding:12px 14px;font-size:.9rem;
+      font-family:"Inter",sans-serif;transition:all .2s;-webkit-appearance:none;}
+    .f-input:focus{background:rgba(255,255,255,.07);border-color:var(--accent);
+      box-shadow:0 0 0 3px rgba(240,192,64,.12);color:#fff;outline:none;}
+    .f-input::placeholder{color:rgba(148,163,184,.55);}
+    input[type="date"].f-input::-webkit-calendar-picker-indicator{filter:invert(.7);cursor:pointer;}
+    select.f-input option{background:#0d1629;color:var(--text);}
+    .f-hint{font-size:.69rem;color:var(--muted);margin-top:5px;display:flex;align-items:center;gap:4px;}
 
-    .btn-premium {
-      background: linear-gradient(135deg, var(--accent-color), var(--accent-hover));
-      color: #080f1e;
-      border: none;
-      font-weight: 700;
-      border-radius: 10px;
-      padding: 12px 24px;
-      transition: all 0.2s;
-    }
-    .btn-premium:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 8px 20px rgba(240, 192, 64, 0.35);
-      background: linear-gradient(135deg, var(--accent-hover), var(--accent-color));
-      color: #080f1e;
-    }
+    /* GRID */
+    .g2{display:grid;gap:14px;grid-template-columns:1fr 1fr;}
+    .g3{display:grid;gap:14px;grid-template-columns:1fr 1fr 1fr;}
+    @media(max-width:575px){.g2{grid-template-columns:1fr;}.g3{grid-template-columns:1fr 1fr;}}
+    .full{grid-column:1/-1;}
 
-    .btn-premium-secondary {
-      background: rgba(255, 255, 255, 0.05);
-      color: var(--text-main);
-      border: 1px solid var(--border-color);
-      font-weight: 600;
-      border-radius: 10px;
-      padding: 12px 24px;
-      transition: all 0.2s;
-    }
-    .btn-premium-secondary:hover {
-      background: rgba(255, 255, 255, 0.1);
-      color: #fff;
-      border-color: rgba(255, 255, 255, 0.2);
-    }
+    /* UPLOAD */
+    .upload-zone{border:2px dashed var(--border);border-radius:var(--radius-sm);
+      background:rgba(255,255,255,.015);transition:all .2s;cursor:pointer;
+      overflow:hidden;position:relative;min-height:130px;}
+    .upload-zone:hover,.upload-zone.dragover{border-color:rgba(240,192,64,.4);background:rgba(240,192,64,.04);}
+    .upload-zone input[type="file"]{position:absolute;inset:0;opacity:0;cursor:pointer;
+      width:100%;height:100%;z-index:2;}
+    .upl-ph{display:flex;flex-direction:column;align-items:center;justify-content:center;
+      gap:7px;padding:22px 12px;text-align:center;pointer-events:none;}
+    .upl-ic{width:46px;height:46px;border-radius:11px;display:flex;align-items:center;
+      justify-content:center;font-size:1.3rem;}
+    .upl-ph .upl-title{font-size:.83rem;font-weight:600;color:var(--text);}
+    .upl-ph .upl-sub{font-size:.71rem;color:var(--muted);}
+    .upl-ph .upl-tap{font-size:.69rem;color:var(--accent);font-weight:600;}
+    .upl-prev{display:none;position:relative;width:100%;}
+    .upl-prev img{width:100%;max-height:150px;object-fit:contain;display:block;padding:10px;}
+    .upl-rm{position:absolute;top:8px;right:8px;width:28px;height:28px;border-radius:50%;
+      background:rgba(239,68,68,.85);color:#fff;border:none;cursor:pointer;
+      display:flex;align-items:center;justify-content:center;font-size:.7rem;z-index:3;transition:background .2s;}
+    .upl-rm:hover{background:var(--danger);}
+    .upl-fname{font-size:.7rem;color:var(--success);text-align:center;padding:0 12px 10px;display:none;}
+    .existing-file{display:flex;align-items:center;gap:8px;padding:8px 12px;
+      background:rgba(16,185,129,.08);border-radius:8px;margin-top:8px;
+      font-size:.74rem;color:var(--success);}
+    .existing-file img{width:36px;height:36px;object-fit:cover;border-radius:6px;
+      border:1px solid rgba(16,185,129,.2);}
 
-    .preview-box {
-      border: 2px dashed var(--border-color);
-      border-radius: 10px;
-      padding: 10px;
-      text-align: center;
-      min-height: 120px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background-color: rgba(255, 255, 255, 0.01);
-    }
+    /* BUTTONS */
+    .btn-cancel{background:rgba(255,255,255,.06);color:var(--text);border:1px solid var(--border);
+      border-radius:var(--radius-sm);padding:12px 18px;font-weight:600;font-size:.875rem;
+      cursor:pointer;transition:all .2s;text-decoration:none;display:inline-flex;align-items:center;gap:6px;}
+    .btn-cancel:hover{background:rgba(255,255,255,.12);color:#fff;}
+    .btn-save{flex:1;background:linear-gradient(135deg,var(--accent),var(--accent2));
+      color:#080f1e;border:none;border-radius:var(--radius-sm);padding:13px 20px;
+      font-weight:700;font-size:.9rem;cursor:pointer;transition:all .2s;
+      display:flex;align-items:center;justify-content:center;gap:8px;}
+    .btn-save:hover{box-shadow:0 6px 20px rgba(240,192,64,.4);transform:translateY(-1px);}
+    .btn-save:active{transform:translateY(0);}
+    .btn-save:disabled{opacity:.7;cursor:not-allowed;transform:none;}
+
+    /* FLOATING (mobile) */
+    .floating-save{display:none;position:fixed;bottom:0;left:0;right:0;
+      padding:12px 16px;background:rgba(8,15,30,.96);backdrop-filter:blur(16px);
+      border-top:1px solid var(--border);z-index:200;gap:10px;}
+    @media(max-width:767px){.floating-save{display:flex;}}
+
+    /* DESKTOP ACTIONS */
+    .desktop-actions{display:none;justify-content:flex-end;gap:12px;margin-top:18px;}
+    @media(min-width:768px){.desktop-actions{display:flex;}.desktop-actions .btn-save{flex:none;padding:12px 28px;}}
+
+    @keyframes slideUp{from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:translateY(0);}}
   </style>
 </head>
 <body>
 
-  <div class="form-container">
-    <div class="glass-card">
-      <div class="d-flex align-items-center justify-content-between mb-4">
-        <h3 class="m-0 text-white">
-          <i class="fa-solid {% if action == 'Add' %}fa-user-plus{% else %}fa-user-pen{% endif %} me-2 text-warning"></i>
-          {{ action }} Student Details
-        </h3>
-        <a href="{% url 'dashboard' %}" class="btn btn-sm btn-premium-secondary">
-          <i class="fa-solid fa-arrow-left me-1"></i> Back to Dashboard
-        </a>
-      </div>
-
-      {% if messages %}
-        <div class="row mb-3">
-          <div class="col-12">
-            {% for message in messages %}
-              <div class="alert alert-{% if message.tags == 'error' %}danger{% else %}{{ message.tags }}{% endif %} alert-dismissible fade show" role="alert">
-                <i class="fa-solid fa-triangle-exclamation me-2"></i> {{ message }}
-                <button type="button" class="btn-close" data-bs-alert="close" data-bs-dismiss="alert" aria-label="Close"></button>
-              </div>
-            {% endfor %}
-          </div>
+  <header class="top-bar">
+    <div class="tb-left">
+      <a href="{% url 'dashboard' %}" class="back-btn" title="Back">
+        <i class="fa-solid fa-arrow-left" style="font-size:.85rem;"></i>
+      </a>
+      <div>
+        <div class="tb-title">
+          {% if action == 'Add' %}<i class="fa-solid fa-user-plus" style="color:var(--accent);margin-right:6px;font-size:.85rem;"></i>Add New Student
+          {% else %}<i class="fa-solid fa-user-pen" style="color:var(--accent);margin-right:6px;font-size:.85rem;"></i>Edit Student{% endif %}
         </div>
-      {% endif %}
+        <div class="tb-sub">{% if action == 'Add' %}Fill in all required fields{% else %}Update student information{% endif %}</div>
+      </div>
+    </div>
+    <button type="submit" form="student-form" class="btn-save-top d-none d-md-flex">
+      <i class="fa-solid {% if action == 'Add' %}fa-user-plus{% else %}fa-floppy-disk{% endif %}"></i>
+      {{ action }} Student
+    </button>
+  </header>
 
-      <form method="POST" enctype="multipart/form-data">
-        {% csrf_token %}
-        <div class="row g-3">
+  <div class="form-wrap">
 
-          
-          <!-- Student Name -->
-          <div class="col-md-6">
-            <label class="form-label">Student Name</label>
-            <input type="text" name="name" value="{{ student.name|default:'' }}" class="form-control premium-input" placeholder="Full name of student" required>
+    {% if messages %}
+      {% for message in messages %}
+        <div class="msg-alert {% if message.tags == 'error' %}error{% else %}success{% endif %}">
+          <i class="fa-solid {% if message.tags == 'error' %}fa-circle-exclamation{% else %}fa-circle-check{% endif %}"></i>
+          <span>{{ message }}</span>
+        </div>
+      {% endfor %}
+    {% endif %}
+
+    <form id="student-form" method="POST" enctype="multipart/form-data" novalidate>
+      {% csrf_token %}
+
+      <!-- SECTION 1: PERSONAL INFO -->
+      <div class="section-card">
+        <div class="sec-header">
+          <div class="sec-icon ic-y"><i class="fa-solid fa-user"></i></div>
+          <div><div class="sec-title">Personal Information</div><div class="sec-sub">Basic details of the student</div></div>
+        </div>
+        <div class="g2">
+          <div class="field-group">
+            <label class="f-label req"><i class="fa-solid fa-id-card"></i> Student Name</label>
+            <input type="text" name="name" value="{{ student.name|default:'' }}" class="f-input" placeholder="Full name" required autocomplete="name">
           </div>
-
-          <!-- Father Name -->
-          <div class="col-md-6">
-            <label class="form-label">Father's Name</label>
-            <input type="text" name="father_name" value="{{ student.father_name|default:'' }}" class="form-control premium-input" placeholder="Father's name" required>
+          <div class="field-group">
+            <label class="f-label req"><i class="fa-solid fa-person"></i> Father's Name</label>
+            <input type="text" name="father_name" value="{{ student.father_name|default:'' }}" class="f-input" placeholder="Father's full name" required>
           </div>
-
-          <!-- Mother Name -->
-          <div class="col-md-6">
-            <label class="form-label">Mother's Name</label>
-            <input type="text" name="mother_name" value="{{ student.mother_name|default:'' }}" class="form-control premium-input" placeholder="Mother's name" required>
+          <div class="field-group">
+            <label class="f-label req"><i class="fa-solid fa-person-dress"></i> Mother's Name</label>
+            <input type="text" name="mother_name" value="{{ student.mother_name|default:'' }}" class="f-input" placeholder="Mother's full name" required>
           </div>
-
-          <!-- Class -->
-          <div class="col-md-3">
-            <label class="form-label">Class</label>
-            <input type="text" name="student_class" value="{{ student.student_class|default:'' }}" class="form-control premium-input" placeholder="e.g. 10th, 12th" required>
-          </div>
-
-          <!-- Batch -->
-          <div class="col-md-3">
-            <label class="form-label">Batch</label>
-            <input type="text" name="batch" value="{{ student.batch|default:'Batch 2026' }}" class="form-control premium-input" placeholder="e.g. Batch 2026" required>
-          </div>
-
-          <!-- Aadhaar Number -->
-          <div class="col-md-6">
-            <label class="form-label">Aadhaar Number</label>
-            <input type="text" name="aadhaar_number" value="{{ student.aadhaar_number|default:'' }}" class="form-control premium-input" placeholder="XXXX XXXX XXXX" maxlength="14" oninput="formatAadhaar(this)" required>
-          </div>
-
-          <!-- Registration Number -->
-          <div class="col-md-6">
-            <label class="form-label">Registration Number</label>
-            <input type="text" name="registration_number" value="{{ student.registration_number|default:'' }}" class="form-control premium-input" placeholder="Registration number" required>
-          </div>
-
-          <!-- Mobile Number -->
-          <div class="col-md-6">
-            <label class="form-label">Mobile Number</label>
-            <input type="text" name="mobile_number" value="{{ student.mobile_number|default:'' }}" class="form-control premium-input" placeholder="10-digit number" maxlength="10" required>
-          </div>
-
-          <!-- DOB -->
-          <div class="col-md-6">
-            <label class="form-label">Date of Birth</label>
-            <input type="date" name="dob" value="{{ student.dob|date:'Y-m-d'|default:'' }}" class="form-control premium-input" required>
-          </div>
-
-          <!-- Gender -->
-          <div class="col-md-6">
-            <label class="form-label">Gender</label>
-            <select name="gender" class="form-select premium-input" required>
-              <option value="Male" {% if student.gender == 'Male' %}selected{% endif %}>Male</option>
+          <div class="field-group">
+            <label class="f-label req"><i class="fa-solid fa-venus-mars"></i> Gender</label>
+            <select name="gender" class="f-input" required>
+              <option value="" disabled {% if not student.gender %}selected{% endif %}>Select gender</option>
+              <option value="Male"   {% if student.gender == 'Male'   %}selected{% endif %}>Male</option>
               <option value="Female" {% if student.gender == 'Female' %}selected{% endif %}>Female</option>
             </select>
           </div>
-
-          <!-- Address -->
-          <div class="col-12">
-            <label class="form-label">Address</label>
-            <textarea name="address" class="form-control premium-input" rows="3" placeholder="Full residential address" required>{{ student.address|default:'' }}</textarea>
+          <div class="field-group">
+            <label class="f-label req"><i class="fa-solid fa-cake-candles"></i> Date of Birth</label>
+            <input type="date" name="dob" value="{{ student.dob|date:'Y-m-d'|default:'' }}" class="f-input" required>
           </div>
-
-          <!-- Photo Upload -->
-          <div class="col-md-6">
-            <label class="form-label">Student Photo (45 x 55 mm)</label>
-            <input type="file" name="photo" accept="image/*" class="form-control premium-input mb-2" id="photo-input">
-            <div class="preview-box">
-              {% if student.photo %}
-                <img id="photo-preview" src="{{ student.photo.url }}" style="max-height: 100px; object-fit: contain;">
-              {% else %}
-                <span id="photo-placeholder" class="text-muted small">No photo selected</span>
-                <img id="photo-preview" style="max-height: 100px; object-fit: contain; display: none;">
-              {% endif %}
-            </div>
+          <div class="field-group full">
+            <label class="f-label req"><i class="fa-solid fa-location-dot"></i> Address</label>
+            <textarea name="address" class="f-input" rows="3" placeholder="Full residential address" required style="resize:vertical;">{{ student.address|default:'' }}</textarea>
           </div>
-
-          <!-- Signature Upload -->
-          <div class="col-md-6">
-            <label class="form-label">Signature</label>
-            <input type="file" name="signature" accept="image/*" class="form-control premium-input mb-2" id="sig-input">
-            <div class="preview-box">
-              {% if student.signature %}
-                <img id="sig-preview" src="{{ student.signature.url }}" style="max-height: 100px; object-fit: contain;">
-              {% else %}
-                <span id="sig-placeholder" class="text-muted small">No signature selected</span>
-                <img id="sig-preview" style="max-height: 100px; object-fit: contain; display: none;">
-              {% endif %}
-            </div>
-          </div>
-
-          <!-- Action Buttons -->
-          <div class="col-12 d-flex gap-3 justify-content-end mt-4">
-            <a href="{% url 'dashboard' %}" class="btn btn-premium-secondary">Cancel</a>
-            <button type="submit" class="btn btn-premium">{{ action }} Student</button>
-          </div>
-
         </div>
-      </form>
-    </div>
+      </div>
+
+      <!-- SECTION 2: ACADEMIC -->
+      <div class="section-card">
+        <div class="sec-header">
+          <div class="sec-icon ic-b"><i class="fa-solid fa-graduation-cap"></i></div>
+          <div><div class="sec-title">Academic Details</div><div class="sec-sub">Class, batch and registration</div></div>
+        </div>
+        <div class="g3">
+          <div class="field-group">
+            <label class="f-label req"><i class="fa-solid fa-chalkboard"></i> Class</label>
+            <input type="text" name="student_class" value="{{ student.student_class|default:'' }}" class="f-input" placeholder="e.g. 10th, 12th" required>
+          </div>
+          <div class="field-group">
+            <label class="f-label req"><i class="fa-solid fa-layer-group"></i> Batch</label>
+            <input type="text" name="batch" value="{{ student.batch|default:'Batch 2026' }}" class="f-input" placeholder="e.g. Batch 2026" required>
+          </div>
+          <div class="field-group">
+            <label class="f-label req"><i class="fa-solid fa-hashtag"></i> Registration No.</label>
+            <input type="text" name="registration_number" value="{{ student.registration_number|default:'' }}" class="f-input" placeholder="REG-2026-001" required>
+          </div>
+        </div>
+      </div>
+
+      <!-- SECTION 3: CONTACT & ID -->
+      <div class="section-card">
+        <div class="sec-header">
+          <div class="sec-icon ic-g"><i class="fa-solid fa-address-card"></i></div>
+          <div><div class="sec-title">Contact &amp; Identity</div><div class="sec-sub">Mobile and Aadhaar details</div></div>
+        </div>
+        <div class="g2">
+          <div class="field-group">
+            <label class="f-label req"><i class="fa-solid fa-mobile-screen"></i> Mobile Number</label>
+            <input type="tel" name="mobile_number" value="{{ student.mobile_number|default:'' }}" class="f-input" placeholder="10-digit number" maxlength="10" inputmode="numeric" required>
+            <div class="f-hint"><i class="fa-solid fa-circle-info"></i> 10 digits only, no spaces</div>
+          </div>
+          <div class="field-group">
+            <label class="f-label req"><i class="fa-solid fa-fingerprint"></i> Aadhaar Number</label>
+            <input type="text" name="aadhaar_number" value="{{ student.aadhaar_number|default:'' }}" class="f-input" placeholder="XXXX XXXX XXXX" maxlength="14" inputmode="numeric" oninput="formatAadhaar(this)" required>
+            <div class="f-hint"><i class="fa-solid fa-circle-info"></i> Auto-formats as you type</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SECTION 4: PHOTO & SIGNATURE -->
+      <div class="section-card">
+        <div class="sec-header">
+          <div class="sec-icon ic-p"><i class="fa-solid fa-camera"></i></div>
+          <div><div class="sec-title">Photo &amp; Signature</div><div class="sec-sub">Tap the box to upload or take photo</div></div>
+        </div>
+        <div class="g2">
+          <!-- PHOTO -->
+          <div class="field-group">
+            <label class="f-label"><i class="fa-solid fa-image"></i> Student Photo <span style="font-size:.63rem;color:var(--muted);text-transform:none;letter-spacing:0;font-weight:400;">(45x55 mm)</span></label>
+            <div class="upload-zone" id="photo-zone">
+              <input type="file" name="photo" accept="image/*" id="photo-input">
+              <div class="upl-ph" id="photo-ph">
+                <div class="upl-ic" style="background:rgba(240,192,64,.1);color:var(--accent);"><i class="fa-solid fa-camera-retro"></i></div>
+                <div class="upl-title">Upload Photo</div>
+                <div class="upl-sub">JPG, PNG or HEIC</div>
+                <div class="upl-tap"><i class="fa-solid fa-hand-pointer"></i> Tap to browse</div>
+              </div>
+              <div class="upl-prev" id="photo-prev-wrap">
+                <button type="button" class="upl-rm" id="photo-remove"><i class="fa-solid fa-xmark"></i></button>
+                <img id="photo-prev-img" src="" alt="Preview">
+              </div>
+            </div>
+            <div class="upl-fname" id="photo-fname"></div>
+            {% if student.photo %}
+              <div class="existing-file" id="photo-existing">
+                <img src="{{ student.photo.url }}" alt="Current photo">
+                <div><div style="font-weight:600;">Current Photo</div><div style="color:var(--muted);font-size:.67rem;">Upload new to replace</div></div>
+              </div>
+            {% endif %}
+          </div>
+
+          <!-- SIGNATURE -->
+          <div class="field-group">
+            <label class="f-label"><i class="fa-solid fa-signature"></i> Student Signature</label>
+            <div class="upload-zone" id="sig-zone">
+              <input type="file" name="signature" accept="image/*" id="sig-input">
+              <div class="upl-ph" id="sig-ph">
+                <div class="upl-ic" style="background:rgba(168,85,247,.1);color:#c084fc;"><i class="fa-solid fa-pen-nib"></i></div>
+                <div class="upl-title">Upload Signature</div>
+                <div class="upl-sub">JPG or PNG preferred</div>
+                <div class="upl-tap"><i class="fa-solid fa-hand-pointer"></i> Tap to browse</div>
+              </div>
+              <div class="upl-prev" id="sig-prev-wrap">
+                <button type="button" class="upl-rm" id="sig-remove"><i class="fa-solid fa-xmark"></i></button>
+                <img id="sig-prev-img" src="" alt="Preview">
+              </div>
+            </div>
+            <div class="upl-fname" id="sig-fname"></div>
+            {% if student.signature %}
+              <div class="existing-file" id="sig-existing">
+                <img src="{{ student.signature.url }}" alt="Current signature" style="background:#fff;padding:2px;">
+                <div><div style="font-weight:600;">Current Signature</div><div style="color:var(--muted);font-size:.67rem;">Upload new to replace</div></div>
+              </div>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+
+      <!-- Desktop actions -->
+      <div class="desktop-actions">
+        <a href="{% url 'dashboard' %}" class="btn-cancel"><i class="fa-solid fa-arrow-left"></i> Cancel</a>
+        <button type="submit" class="btn-save">
+          <i class="fa-solid {% if action == 'Add' %}fa-user-plus{% else %}fa-floppy-disk{% endif %}"></i>
+          {{ action }} Student
+        </button>
+      </div>
+    </form>
   </div>
 
+  <!-- Floating save (mobile) -->
+  <div class="floating-save">
+    <a href="{% url 'dashboard' %}" class="btn-cancel"><i class="fa-solid fa-xmark"></i></a>
+    <button type="submit" form="student-form" class="btn-save">
+      <i class="fa-solid {% if action == 'Add' %}fa-user-plus{% else %}fa-floppy-disk{% endif %}"></i>
+      {{ action }} Student
+    </button>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   <script>
-    // Aadhaar Input Formatter (xxxx xxxx xxxx)
-    function formatAadhaar(el) {
-      let v = el.value.replace(/\D/g, '').slice(0, 12);
-      el.value = v.replace(/(\d{4})(?=\d)/g, '$1 ').trim();
+    function formatAadhaar(el){
+      let v=el.value.replace(/\D/g,"").slice(0,12);
+      el.value=v.replace(/(\d{4})(?=\d)/g,"$1 ").trim();
     }
+    const mobEl=document.querySelector('input[name="mobile_number"]');
+    if(mobEl)mobEl.addEventListener("input",function(){this.value=this.value.replace(/\D/g,"").slice(0,10);});
 
-    // Photo Preview handler
-    document.getElementById('photo-input').addEventListener('change', function(e) {
-      const file = e.target.files[0];
-      if (file) {
-        const reader = new FileReader();
-        reader.onload = function(evt) {
-          const preview = document.getElementById('photo-preview');
-          const placeholder = document.getElementById('photo-placeholder');
-          if (placeholder) placeholder.style.display = 'none';
-          preview.src = evt.target.result;
-          preview.style.display = 'block';
-        }
-        reader.readAsDataURL(file);
-      }
-    });
+    function setupUpload(z,i,pw,pi,ph,rm,fn,ex){
+      const zone=document.getElementById(z),inp=document.getElementById(i),
+        prevW=document.getElementById(pw),prevI=document.getElementById(pi),
+        holder=document.getElementById(ph),rmBtn=document.getElementById(rm),
+        fname=document.getElementById(fn),exist=ex?document.getElementById(ex):null;
+      const show=(src,name)=>{prevI.src=src;prevW.style.display="block";holder.style.display="none";
+        fname.style.display="block";fname.innerHTML='<i class="fa-solid fa-circle-check" style="color:var(--success);margin-right:4px;"></i>'+name;
+        if(exist)exist.style.display="none";};
+      const clear=()=>{inp.value="";prevI.src="";prevW.style.display="none";holder.style.display="";
+        fname.style.display="none";if(exist)exist.style.display="";};
+      inp.addEventListener("change",()=>{const f=inp.files[0];if(!f)return;const r=new FileReader();r.onload=e=>show(e.target.result,f.name);r.readAsDataURL(f);});
+      rmBtn.addEventListener("click",e=>{e.preventDefault();e.stopPropagation();clear();});
+      zone.addEventListener("dragover",e=>{e.preventDefault();zone.classList.add("dragover");});
+      zone.addEventListener("dragleave",()=>zone.classList.remove("dragover"));
+      zone.addEventListener("drop",e=>{e.preventDefault();zone.classList.remove("dragover");
+        const f=e.dataTransfer.files[0];if(f&&f.type.startsWith("image/")){
+          const dt=new DataTransfer();dt.items.add(f);inp.files=dt.files;
+          const r=new FileReader();r.onload=ev=>show(ev.target.result,f.name);r.readAsDataURL(f);}});
+    }
+    setupUpload("photo-zone","photo-input","photo-prev-wrap","photo-prev-img","photo-ph","photo-remove","photo-fname","photo-existing");
+    setupUpload("sig-zone","sig-input","sig-prev-wrap","sig-prev-img","sig-ph","sig-remove","sig-fname","sig-existing");
 
-    // Signature Preview handler
-    document.getElementById('sig-input').addEventListener('change', function(e) {
-      const file = e.target.files[0];
-      if (file) {
-        const reader = new FileReader();
-        reader.onload = function(evt) {
-          const preview = document.getElementById('sig-preview');
-          const placeholder = document.getElementById('sig-placeholder');
-          if (placeholder) placeholder.style.display = 'none';
-          preview.src = evt.target.result;
-          preview.style.display = 'block';
-        }
-        reader.readAsDataURL(file);
-      }
+    document.getElementById("student-form").addEventListener("submit",function(){
+      document.querySelectorAll(".btn-save,.btn-save-top").forEach(b=>{
+        b.innerHTML='<i class="fa-solid fa-circle-notch fa-spin"></i> Saving\u2026';
+        b.disabled=true;});
     });
   </script>
 </body>
