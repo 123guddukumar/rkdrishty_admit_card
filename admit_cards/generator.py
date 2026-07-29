@@ -96,7 +96,7 @@ def generate_admit_card_files(student, verification_url=None):
         try:
             photo_w = PHOTO_SETTINGS.get("width", 200)
             photo_h = PHOTO_SETTINGS.get("height", 259)
-            photo_coords = COORDINATES.get("photo", (50, 257))
+            photo_coords = COORDINATES.get("photo", (50, 247))
 
             # Crop & Resize photo
             processed_photo = crop_and_resize_photo(

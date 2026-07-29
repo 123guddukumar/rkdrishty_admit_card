@@ -11,9 +11,9 @@ COORDINATES = {
     "mobile": (340, 820),
     "dob": (340, 873),
     "address": (340, 921),
-    "photo": (50, 257),
-    "male_checkbox": (715, 880),
-    "female_checkbox": (825, 880)
+    "photo": (50, 247),
+    "male_checkbox": (708, 883),
+    "female_checkbox": (818, 883)
 }
 
 # General settings for dynamic rendering
