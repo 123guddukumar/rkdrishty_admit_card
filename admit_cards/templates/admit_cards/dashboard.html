@@ -448,9 +448,10 @@
               <div class="input-group">
                 <span class="input-group-text bg-transparent border-end-0 border-secondary text-muted"><i class="fa-solid fa-magnifying-glass"></i></span>
                 <input type="text" name="q" value="{{ query }}" class="form-control premium-input border-start-0 ps-0" placeholder="Search by name, reg, mobile, aadhaar...">
+                <button type="submit" class="btn btn-premium-secondary d-md-none border-start-0" style="border-top-left-radius: 0; border-bottom-left-radius: 0; border-color: var(--border-color);"><i class="fa-solid fa-magnifying-glass"></i></button>
               </div>
             </div>
-            <div class="col-6 col-sm-3 col-md-2">
+            <div class="col-6 col-sm-3 col-md-2 d-none d-md-block">
               <select name="class" class="form-select premium-input">
                 <option value="">All Classes</option>
                 {% for c in classes %}
@@ -458,7 +459,7 @@
                 {% endfor %}
               </select>
             </div>
-            <div class="col-6 col-sm-3 col-md-2">
+            <div class="col-6 col-sm-3 col-md-2 d-none d-md-block">
               <select name="batch" class="form-select premium-input">
                 <option value="">All Batches</option>
                 {% for b in batches %}
@@ -466,14 +467,14 @@
                 {% endfor %}
               </select>
             </div>
-            <div class="col-6 col-sm-3 col-md-2">
+            <div class="col-6 col-sm-3 col-md-2 d-none d-md-block">
               <select name="status" class="form-select premium-input">
                 <option value="">All Status</option>
                 <option value="generated" {% if status_filter == 'generated' %}selected{% endif %}>Generated</option>
                 <option value="pending" {% if status_filter == 'pending' %}selected{% endif %}>Pending</option>
               </select>
             </div>
-            <div class="col-6 col-sm-3 col-md-2 d-flex gap-2">
+            <div class="col-6 col-sm-3 col-md-2 d-none d-md-flex gap-2">
               <button type="submit" class="btn btn-premium-secondary w-100"><i class="fa-solid fa-filter"></i></button>
               <a href="{% url 'dashboard' %}" class="btn btn-premium-secondary"><i class="fa-solid fa-arrows-rotate"></i></a>
             </div>
@@ -483,69 +484,118 @@
           <div class="student-list-container">
             <div class="student-list">
               {% for s in students %}
-                <div class="student-list-item mb-3 d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3">
-                  <!-- Left: Profile & Info -->
-                  <div class="d-flex align-items-center gap-3">
-                    <div class="avatar-container flex-shrink-0">
-                      {% if s.photo %}
-                        <img src="{{ s.photo.url }}" class="rounded-circle border border-secondary" style="width: 48px; height: 48px; object-fit: cover;">
-                      {% else %}
-                        <div class="rounded-circle bg-secondary d-flex align-items-center justify-content-center text-white" style="width: 48px; height: 48px;">
-                          <i class="fa-solid fa-user"></i>
+                <div class="student-list-item mb-2.5">
+                  <!-- Desktop Layout (shows all details) -->
+                  <div class="d-none d-md-flex align-items-center justify-content-between gap-3 w-100">
+                    <!-- Left: Profile & Info -->
+                    <div class="d-flex align-items-center gap-3">
+                      <div class="avatar-container flex-shrink-0">
+                        {% if s.photo %}
+                          <img src="{{ s.photo.url }}" class="rounded-circle border border-secondary" style="width: 48px; height: 48px; object-fit: cover;">
+                        {% else %}
+                          <div class="rounded-circle bg-secondary d-flex align-items-center justify-content-center text-white" style="width: 48px; height: 48px;">
+                            <i class="fa-solid fa-user"></i>
+                          </div>
+                        {% endif %}
+                      </div>
+                      <div>
+                        <div class="fw-bold text-white fs-6">{{ s.name }}</div>
+                        <div class="d-flex flex-wrap gap-2 align-items-center mt-1">
+                          <span class="text-muted small">F: {{ s.father_name }}</span>
+                          <span class="text-secondary">•</span>
+                          <code class="text-warning small fw-semibold">{{ s.registration_number }}</code>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Middle: Class/Batch & Gender/DOB -->
+                    <div class="d-flex align-items-center gap-4 flex-wrap">
+                      <div>
+                        <div class="text-muted" style="font-size: 0.7rem; text-transform: uppercase; font-weight: 600; letter-spacing: 0.5px;">Class & Batch</div>
+                        <div class="text-white small fw-semibold mt-1">{{ s.student_class }} <span class="text-muted">({{ s.batch }})</span></div>
+                      </div>
+                      <div>
+                        <div class="text-muted" style="font-size: 0.7rem; text-transform: uppercase; font-weight: 600; letter-spacing: 0.5px;">Gender & DOB</div>
+                        <div class="text-white small mt-1">{{ s.dob|date:"d/m/Y" }} <span class="text-muted">({{ s.gender }})</span></div>
+                      </div>
+                    </div>
+
+                    <!-- Right: Status & Downloads -->
+                    <div class="d-flex align-items-center gap-3 flex-wrap">
+                      <div>
+                        {% if s.is_generated %}
+                          <span class="premium-badge badge-generated">Generated</span>
+                        {% else %}
+                          <span class="premium-badge badge-pending">Pending</span>
+                        {% endif %}
+                      </div>
+                      {% if s.is_generated %}
+                        <div class="d-flex gap-1.5">
+                          <a href="{% url 'download_card_api' %}?student_id={{ s.id }}&format=jpg" class="btn btn-sm btn-outline-info py-1 px-2.5" style="font-size: 0.72rem; font-weight: 500;"><i class="fa-solid fa-image me-1"></i> JPG</a>
+                          <a href="{% url 'download_card_api' %}?student_id={{ s.id }}&format=pdf" class="btn btn-sm btn-outline-danger py-1 px-2.5" style="font-size: 0.72rem; font-weight: 500;"><i class="fa-solid fa-file-pdf me-1"></i> PDF</a>
                         </div>
                       {% endif %}
                     </div>
-                    <div>
-                      <div class="fw-bold text-white fs-6">{{ s.name }}</div>
-                      <div class="d-flex flex-wrap gap-2 align-items-center mt-1">
-                        <span class="text-muted small">F: {{ s.father_name }}</span>
-                        <span class="text-secondary d-none d-sm-inline">•</span>
-                        <code class="text-warning small fw-semibold">{{ s.registration_number }}</code>
+
+                    <!-- Actions -->
+                    <div class="d-flex gap-2">
+                      <button class="btn btn-sm btn-premium py-1.5 px-3 btn-generate-single" data-id="{{ s.id }}">
+                        <i class="fa-solid fa-wand-magic-sparkles me-1"></i> Generate
+                      </button>
+                      {% if s.is_generated %}
+                        <button class="btn btn-sm btn-premium-secondary py-1.5 px-3 btn-preview" data-name="{{ s.name }}" data-url="{{ s.card_jpg.url }}">
+                          <i class="fa-solid fa-eye me-1"></i> Preview
+                        </button>
+                      {% endif %}
+                      <a href="{% url 'edit_student' s.pk %}" class="btn btn-sm btn-premium-secondary py-1.5 px-2.5"><i class="fa-solid fa-pen-to-square"></i></a>
+                      <a href="{% url 'delete_student' s.pk %}" class="btn btn-sm btn-premium-secondary py-1.5 px-2.5 text-danger" onclick="return confirm('Are you sure you want to delete this student?')"><i class="fa-solid fa-trash-can"></i></a>
+                    </div>
+                  </div>
+
+                  <!-- Mobile Layout (shows avatar, name, and download buttons in small height) -->
+                  <div class="d-flex d-md-none align-items-center justify-content-between w-100">
+                    <div class="d-flex align-items-center gap-2.5 flex-grow-1 btn-student-details" 
+                         data-id="{{ s.id }}" 
+                         data-name="{{ s.name }}"
+                         data-father="{{ s.father_name }}"
+                         data-mother="{{ s.mother_name }}"
+                         data-class="{{ s.student_class }}"
+                         data-batch="{{ s.batch }}"
+                         data-aadhaar="{{ s.aadhaar_number }}"
+                         data-reg="{{ s.registration_number }}"
+                         data-mobile="{{ s.mobile_number }}"
+                         data-dob="{{ s.dob|date:'d/m/Y' }}"
+                         data-gender="{{ s.gender }}"
+                         data-address="{{ s.address }}"
+                         data-photo="{% if s.photo %}{{ s.photo.url }}{% endif %}"
+                         data-sig="{% if s.signature %}{{ s.signature.url }}{% endif %}"
+                         data-generated="{{ s.is_generated|yesno:'true,false' }}"
+                         data-card-url="{% if s.card_jpg %}{{ s.card_jpg.url }}{% endif %}"
+                         style="cursor: pointer;">
+                      <div class="avatar-container flex-shrink-0">
+                        {% if s.photo %}
+                          <img src="{{ s.photo.url }}" class="rounded-circle border border-secondary" style="width: 36px; height: 36px; object-fit: cover;">
+                        {% else %}
+                          <div class="rounded-circle bg-secondary d-flex align-items-center justify-content-center text-white" style="width: 36px; height: 36px;">
+                            <i class="fa-solid fa-user" style="font-size: 0.85rem;"></i>
+                          </div>
+                        {% endif %}
+                      </div>
+                      <div>
+                        <div class="fw-bold text-white" style="font-size: 0.85rem; line-height: 1.2;">{{ s.name }}</div>
+                        <div class="text-muted mt-0.5" style="font-size: 0.72rem;">Reg: {{ s.registration_number }}</div>
                       </div>
                     </div>
-                  </div>
 
-                  <!-- Middle: Class/Batch & Gender/DOB -->
-                  <div class="d-flex align-items-center gap-4 flex-wrap justify-content-start justify-content-md-center">
-                    <div>
-                      <div class="text-muted" style="font-size: 0.7rem; text-transform: uppercase; font-weight: 600; letter-spacing: 0.5px;">Class & Batch</div>
-                      <div class="text-white small fw-semibold mt-1">{{ s.student_class }} <span class="text-muted">({{ s.batch }})</span></div>
-                    </div>
-                    <div>
-                      <div class="text-muted" style="font-size: 0.7rem; text-transform: uppercase; font-weight: 600; letter-spacing: 0.5px;">Gender & DOB</div>
-                      <div class="text-white small mt-1">{{ s.dob|date:"d/m/Y" }} <span class="text-muted">({{ s.gender }})</span></div>
-                    </div>
-                  </div>
-
-                  <!-- Right: Status & Downloads -->
-                  <div class="d-flex align-items-center gap-3 flex-wrap justify-content-start justify-content-md-center">
-                    <div>
+                    <!-- Downloads: Keep it on the right side of the list item -->
+                    <div class="d-flex gap-1.5 align-items-center flex-shrink-0 ms-2">
                       {% if s.is_generated %}
-                        <span class="premium-badge badge-generated">Generated</span>
+                        <a href="{% url 'download_card_api' %}?student_id={{ s.id }}&format=jpg" class="btn btn-sm btn-outline-info p-1 px-2.5" style="font-size: 0.72rem;"><i class="fa-solid fa-image"></i> JPG</a>
+                        <a href="{% url 'download_card_api' %}?student_id={{ s.id }}&format=pdf" class="btn btn-sm btn-outline-danger p-1 px-2.5" style="font-size: 0.72rem;"><i class="fa-solid fa-file-pdf"></i> PDF</a>
                       {% else %}
-                        <span class="premium-badge badge-pending">Pending</span>
+                        <span class="premium-badge badge-pending py-1 px-2.5" style="font-size: 0.68rem; border-radius: 4px;">Pending</span>
                       {% endif %}
                     </div>
-                    {% if s.is_generated %}
-                      <div class="d-flex gap-1.5">
-                        <a href="{% url 'download_card_api' %}?student_id={{ s.id }}&format=jpg" class="btn btn-sm btn-outline-info py-1 px-2.5" style="font-size: 0.72rem; font-weight: 500;"><i class="fa-solid fa-image me-1"></i> JPG</a>
-                        <a href="{% url 'download_card_api' %}?student_id={{ s.id }}&format=pdf" class="btn btn-sm btn-outline-danger py-1 px-2.5" style="font-size: 0.72rem; font-weight: 500;"><i class="fa-solid fa-file-pdf me-1"></i> PDF</a>
-                      </div>
-                    {% endif %}
-                  </div>
-
-                  <!-- Actions -->
-                  <div class="d-flex justify-content-end gap-2 flex-wrap border-top border-secondary pt-3 pt-md-0 border-md-top-0 mt-2 mt-md-0 justify-content-md-end w-100 w-md-auto">
-                    <button class="btn btn-sm btn-premium py-1.5 px-3 btn-generate-single" data-id="{{ s.id }}">
-                      <i class="fa-solid fa-wand-magic-sparkles me-1"></i> Generate
-                    </button>
-                    {% if s.is_generated %}
-                      <button class="btn btn-sm btn-premium-secondary py-1.5 px-3 btn-preview" data-name="{{ s.name }}" data-url="{{ s.card_jpg.url }}">
-                        <i class="fa-solid fa-eye me-1"></i> Preview
-                      </button>
-                    {% endif %}
-                    <a href="{% url 'edit_student' s.pk %}" class="btn btn-sm btn-premium-secondary py-1.5 px-2.5"><i class="fa-solid fa-pen-to-square"></i></a>
-                    <a href="{% url 'delete_student' s.pk %}" class="btn btn-sm btn-premium-secondary py-1.5 px-2.5 text-danger" onclick="return confirm('Are you sure you want to delete this student?')"><i class="fa-solid fa-trash-can"></i></a>
                   </div>
                 </div>
               {% empty %}
@@ -638,6 +688,84 @@
     </div>
   </div>
 
+  <!-- STUDENT DETAILS MODAL (MOBILE VIEW DETAILS ON TAP) -->
+  <div class="modal fade" id="studentDetailsModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content bg-secondary text-white" style="border: 1px solid var(--border-color); border-radius: 16px; box-shadow: var(--shadow-premium);">
+        <div class="modal-header border-bottom-0 pb-0">
+          <h5 class="modal-title fw-bold text-warning"><i class="fa-solid fa-circle-info me-2"></i>Student Details</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body py-3">
+          <div class="d-flex align-items-center gap-3 mb-3 border-bottom border-secondary pb-3">
+            <img id="detail-photo" src="" class="rounded-circle border border-secondary" style="width: 54px; height: 54px; object-fit: cover; display: none;">
+            <div id="detail-photo-placeholder" class="rounded-circle bg-secondary d-flex align-items-center justify-content-center text-white" style="width: 54px; height: 54px; display: none;">
+              <i class="fa-solid fa-user fs-4"></i>
+            </div>
+            <div>
+              <h5 class="m-0 fw-bold text-white" id="detail-name"></h5>
+              <code class="text-warning small fw-semibold" id="detail-reg"></code>
+            </div>
+          </div>
+
+          <div class="row g-2 small text-white-50">
+            <div class="col-6">
+              <span class="d-block text-muted" style="font-size: 0.72rem;">FATHER'S NAME</span>
+              <strong class="text-white" id="detail-father"></strong>
+            </div>
+            <div class="col-6">
+              <span class="d-block text-muted" style="font-size: 0.72rem;">MOTHER'S NAME</span>
+              <strong class="text-white" id="detail-mother"></strong>
+            </div>
+            <div class="col-6 mt-2">
+              <span class="d-block text-muted" style="font-size: 0.72rem;">CLASS / BATCH</span>
+              <strong class="text-white" id="detail-class-batch"></strong>
+            </div>
+            <div class="col-6 mt-2">
+              <span class="d-block text-muted" style="font-size: 0.72rem;">GENDER / DOB</span>
+              <strong class="text-white" id="detail-gender-dob"></strong>
+            </div>
+            <div class="col-6 mt-2">
+              <span class="d-block text-muted" style="font-size: 0.72rem;">AADHAAR NUMBER</span>
+              <strong class="text-white" id="detail-aadhaar"></strong>
+            </div>
+            <div class="col-6 mt-2">
+              <span class="d-block text-muted" style="font-size: 0.72rem;">MOBILE NUMBER</span>
+              <strong class="text-white" id="detail-mobile"></strong>
+            </div>
+            <div class="col-12 mt-2">
+              <span class="d-block text-muted" style="font-size: 0.72rem;">ADDRESS</span>
+              <strong class="text-white" id="detail-address"></strong>
+            </div>
+          </div>
+
+          <div class="row mt-3 pt-3 border-top border-secondary align-items-center">
+            <div class="col-6">
+              <span class="d-block text-muted mb-1" style="font-size: 0.72rem;">SIGNATURE</span>
+              <img id="detail-sig" src="" class="border border-secondary rounded p-1 bg-white" style="max-height: 40px; object-fit: contain; display: none;">
+              <span id="detail-sig-none" class="text-muted small" style="display: none;">No signature</span>
+            </div>
+            <div class="col-6 text-end">
+              <span class="d-block text-muted mb-1" style="font-size: 0.72rem;">STATUS</span>
+              <span id="detail-status" class="premium-badge"></span>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer border-top-0 pt-0">
+          <div class="d-flex gap-2 w-100 justify-content-end flex-wrap">
+            <!-- Edit / Delete -->
+            <a id="detail-btn-edit" href="" class="btn btn-sm btn-premium-secondary py-1.5 px-3"><i class="fa-solid fa-pen-to-square me-1"></i> Edit</a>
+            <a id="detail-btn-delete" href="" class="btn btn-sm btn-premium-secondary py-1.5 px-3 text-danger" onclick="return confirm('Are you sure you want to delete this student?')"><i class="fa-solid fa-trash-can me-1"></i> Delete</a>
+            
+            <!-- Action / Preview -->
+            <button id="detail-btn-generate" class="btn btn-sm btn-premium py-1.5 px-3 btn-generate-single" data-id=""><i class="fa-solid fa-wand-magic-sparkles me-1"></i> Generate</button>
+            <button id="detail-btn-preview" class="btn btn-sm btn-premium-secondary py-1.5 px-3 btn-preview" data-name="" data-url=""><i class="fa-solid fa-eye me-1"></i> Preview</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- Bootstrap 5 JS Bundle -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   
@@ -658,13 +786,105 @@
 
       // Preview Card handler
       document.querySelectorAll('.btn-preview').forEach(btn => {
-        btn.addEventListener('click', () => {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation(); // Prevent opening details modal if clicked inside details-trigger
           const name = btn.getAttribute('data-name');
           const url = btn.getAttribute('data-url');
           document.getElementById('previewModalTitle').innerText = `${name} - Admit Card Preview`;
           document.getElementById('previewModalImage').src = url;
           const myModal = new bootstrap.Modal(document.getElementById('previewModal'));
           myModal.show();
+        });
+      });
+
+      // Mobile Student Details trigger (opens popup modal on mobile row click)
+      document.querySelectorAll('.btn-student-details').forEach(row => {
+        row.addEventListener('click', () => {
+          const id = row.getAttribute('data-id');
+          const name = row.getAttribute('data-name');
+          const father = row.getAttribute('data-father');
+          const mother = row.getAttribute('data-mother');
+          const studentClass = row.getAttribute('data-class');
+          const batch = row.getAttribute('data-batch');
+          const aadhaar = row.getAttribute('data-aadhaar');
+          const reg = row.getAttribute('data-reg');
+          const mobile = row.getAttribute('data-mobile');
+          const dob = row.getAttribute('data-dob');
+          const gender = row.getAttribute('data-gender');
+          const address = row.getAttribute('data-address');
+          const photo = row.getAttribute('data-photo');
+          const sig = row.getAttribute('data-sig');
+          const generated = row.getAttribute('data-generated') === 'true';
+          const cardUrl = row.getAttribute('data-card-url');
+
+          // Bind details values
+          document.getElementById('detail-name').innerText = name;
+          document.getElementById('detail-reg').innerText = reg;
+          document.getElementById('detail-father').innerText = father;
+          document.getElementById('detail-mother').innerText = mother;
+          document.getElementById('detail-class-batch').innerText = `${studentClass} (${batch})`;
+          document.getElementById('detail-gender-dob').innerText = `${gender} / ${dob}`;
+          document.getElementById('detail-aadhaar').innerText = aadhaar || 'N/A';
+          document.getElementById('detail-mobile').innerText = mobile;
+          document.getElementById('detail-address').innerText = address;
+
+          // Photo setup
+          const photoImg = document.getElementById('detail-photo');
+          const photoPlaceholder = document.getElementById('detail-photo-placeholder');
+          if (photo) {
+            photoImg.src = photo;
+            photoImg.style.display = 'block';
+            photoPlaceholder.style.display = 'none';
+          } else {
+            photoImg.style.display = 'none';
+            photoPlaceholder.style.display = 'block';
+          }
+
+          // Signature setup
+          const sigImg = document.getElementById('detail-sig');
+          const sigNone = document.getElementById('detail-sig-none');
+          if (sig) {
+            sigImg.src = sig;
+            sigImg.style.display = 'block';
+            sigNone.style.display = 'none';
+          } else {
+            sigImg.style.display = 'none';
+            sigNone.style.display = 'block';
+          }
+
+          // Status setup
+          const statusBadge = document.getElementById('detail-status');
+          statusBadge.className = 'premium-badge ' + (generated ? 'badge-generated' : 'badge-pending');
+          statusBadge.innerText = generated ? 'Generated' : 'Pending';
+
+          // Action URL setup for buttons
+          document.getElementById('detail-btn-edit').href = `/student/${id}/edit/`;
+          document.getElementById('detail-btn-delete').href = `/student/${id}/delete/`;
+
+          // Generate button setup
+          const genBtn = document.getElementById('detail-btn-generate');
+          genBtn.setAttribute('data-id', id);
+          if (generated) {
+            genBtn.style.display = 'none';
+          } else {
+            genBtn.style.display = 'inline-block';
+            genBtn.innerHTML = `<i class="fa-solid fa-wand-magic-sparkles me-1"></i> Generate`;
+            genBtn.disabled = false;
+          }
+
+          // Preview button setup
+          const prevBtn = document.getElementById('detail-btn-preview');
+          if (generated) {
+            prevBtn.style.display = 'inline-block';
+            prevBtn.setAttribute('data-name', name);
+            prevBtn.setAttribute('data-url', cardUrl);
+          } else {
+            prevBtn.style.display = 'none';
+          }
+
+          // Show modal
+          const detailsModal = new bootstrap.Modal(document.getElementById('studentDetailsModal'));
+          detailsModal.show();
         });
       });
 
