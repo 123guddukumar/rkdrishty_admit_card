@@ -187,6 +187,9 @@ def parse_date_robust(date_str):
             continue
     raise ValueError(f"Invalid date format: '{date_str}'. Please use YYYY-MM-DD or DD/MM/YYYY.")
 
+def _is_ajax(request):
+    return request.headers.get('X-Requested-With') == 'XMLHttpRequest'
+
 def add_student(request):
     if request.method == 'POST':
         try:
@@ -209,9 +212,13 @@ def add_student(request):
                 signature=request.FILES.get('signature'),
             )
             log_activity("Add Student", request.user, f"Added student {student.name}")
+            if _is_ajax(request):
+                return JsonResponse({'status': 'success', 'message': f"Student {student.name} added successfully!", 'redirect': '/'})
             messages.success(request, f"Student {student.name} added successfully!")
             return redirect('dashboard')
         except Exception as e:
+            if _is_ajax(request):
+                return JsonResponse({'status': 'error', 'message': str(e)}, status=400)
             messages.error(request, f"Error adding student: {e}")
             
     return render(request, 'admit_cards/student_form.html', {'action': 'Add'})
@@ -246,9 +253,13 @@ def edit_student(request, pk):
             student.save()
             
             log_activity("Edit Student", request.user, f"Updated student {student.name}")
+            if _is_ajax(request):
+                return JsonResponse({'status': 'success', 'message': f"Student {student.name} updated successfully!", 'redirect': '/'})
             messages.success(request, f"Student {student.name} updated successfully!")
             return redirect('dashboard')
         except Exception as e:
+            if _is_ajax(request):
+                return JsonResponse({'status': 'error', 'message': str(e)}, status=400)
             messages.error(request, f"Error updating student: {e}")
             
     return render(request, 'admit_cards/student_form.html', {'student': student, 'action': 'Edit'})

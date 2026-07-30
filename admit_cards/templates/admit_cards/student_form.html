@@ -342,6 +342,28 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+  <!-- Toast notification -->
+  <style>
+    .toast-notif{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);
+      background:#1e293b;border:1px solid rgba(255,255,255,.12);color:#f8fafc;border-radius:12px;
+      padding:14px 22px;font-size:.875rem;font-weight:600;display:flex;align-items:center;gap:10px;
+      z-index:9999;opacity:0;transition:all .35s cubic-bezier(.34,1.56,.64,1);box-shadow:0 8px 32px rgba(0,0,0,.5);
+      pointer-events:none;white-space:nowrap;}
+    .toast-notif.show{opacity:1;transform:translateX(-50%) translateY(0);}
+    .toast-notif.success{border-color:rgba(16,185,129,.4);background:rgba(16,185,129,.15);}
+    .toast-notif.error{border-color:rgba(239,68,68,.4);background:rgba(239,68,68,.15);}
+    .save-progress{position:fixed;top:0;left:0;right:0;height:3px;background:transparent;z-index:9998;}
+    .save-progress .bar{height:100%;width:0;background:linear-gradient(90deg,#f0c040,#d4a017);
+      border-radius:0 2px 2px 0;transition:width .4s ease;box-shadow:0 0 8px rgba(240,192,64,.6);}
+    .inline-error{background:rgba(239,68,68,.12);border:1px solid rgba(239,68,68,.35);color:#fca5a5;
+      border-radius:10px;padding:12px 16px;margin-bottom:14px;display:flex;align-items:flex-start;
+      gap:10px;font-size:.875rem;animation:slideUp .3s ease;}
+  </style>
+
+  <!-- Progress bar -->
+  <div class="save-progress" id="save-progress"><div class="bar" id="progress-bar"></div></div>
+
   <script>
     function formatAadhaar(el){
       let v=el.value.replace(/\D/g,"").slice(0,12);
@@ -372,10 +394,106 @@
     setupUpload("photo-zone","photo-input","photo-prev-wrap","photo-prev-img","photo-ph","photo-remove","photo-fname","photo-existing");
     setupUpload("sig-zone","sig-input","sig-prev-wrap","sig-prev-img","sig-ph","sig-remove","sig-fname","sig-existing");
 
-    document.getElementById("student-form").addEventListener("submit",function(){
-      document.querySelectorAll(".btn-save,.btn-save-top").forEach(b=>{
-        b.innerHTML='<i class="fa-solid fa-circle-notch fa-spin"></i> Saving\u2026';
-        b.disabled=true;});
+    /* ── Toast helper ── */
+    function showToast(msg, type='success'){
+      let t=document.getElementById('toast-notif');
+      if(!t){t=document.createElement('div');t.id='toast-notif';t.className='toast-notif';document.body.appendChild(t);}
+      t.className='toast-notif '+type;
+      t.innerHTML=(type==='success'
+        ?'<i class="fa-solid fa-circle-check" style="color:#34d399;font-size:1.1rem;"></i>'
+        :'<i class="fa-solid fa-circle-xmark" style="color:#f87171;font-size:1.1rem;"></i>')+msg;
+      requestAnimationFrame(()=>requestAnimationFrame(()=>t.classList.add('show')));
+      setTimeout(()=>{t.classList.remove('show');},3200);
+    }
+
+    /* ── Progress bar helper ── */
+    function setProgress(pct){
+      document.getElementById('progress-bar').style.width=pct+'%';
+    }
+
+    /* ── Compress image before upload (max 1000px, quality 0.82) ── */
+    async function compressImage(file, maxPx=1000, quality=0.82){
+      return new Promise(resolve=>{
+        const img=new Image(), url=URL.createObjectURL(file);
+        img.onload=()=>{
+          URL.revokeObjectURL(url);
+          let w=img.width, h=img.height;
+          if(w<=maxPx && h<=maxPx){resolve(file);return;}
+          const scale=maxPx/Math.max(w,h);
+          w=Math.round(w*scale); h=Math.round(h*scale);
+          const cv=document.createElement('canvas');
+          cv.width=w; cv.height=h;
+          cv.getContext('2d').drawImage(img,0,0,w,h);
+          cv.toBlob(blob=>resolve(new File([blob],file.name,{type:'image/jpeg'})),'image/jpeg',quality);
+        };
+        img.src=url;
+      });
+    }
+
+    /* ── AJAX Form Submit ── */
+    document.getElementById("student-form").addEventListener("submit", async function(e){
+      e.preventDefault();
+
+      // Remove any previous inline errors
+      document.querySelectorAll('.inline-error').forEach(el=>el.remove());
+
+      // Set buttons to loading state
+      const btns=[...document.querySelectorAll(".btn-save,.btn-save-top")];
+      btns.forEach(b=>{
+        b.dataset.orig=b.innerHTML;
+        b.innerHTML='<i class="fa-solid fa-circle-notch fa-spin"></i> Saving…';
+        b.disabled=true;
+      });
+
+      setProgress(15);
+
+      // Build FormData
+      const fd=new FormData(this);
+
+      // Compress images if present (saves upload time significantly)
+      const photoFile=document.getElementById('photo-input').files[0];
+      const sigFile=document.getElementById('sig-input').files[0];
+      if(photoFile && photoFile.size > 200*1024){
+        setProgress(30);
+        fd.set('photo', await compressImage(photoFile));
+      }
+      if(sigFile && sigFile.size > 200*1024){
+        setProgress(45);
+        fd.set('signature', await compressImage(sigFile));
+      }
+
+      setProgress(60);
+
+      try{
+        const resp=await fetch(this.action||window.location.href,{
+          method:'POST',
+          headers:{'X-Requested-With':'XMLHttpRequest'},
+          body:fd
+        });
+
+        setProgress(90);
+        const data=await resp.json();
+        setProgress(100);
+
+        if(data.status==='success'){
+          showToast(data.message,'success');
+          setTimeout(()=>{ window.location.href='/'; },900);
+        } else {
+          // Restore buttons
+          btns.forEach(b=>{b.innerHTML=b.dataset.orig;b.disabled=false;});
+          setProgress(0);
+          // Show inline error
+          const errDiv=document.createElement('div');
+          errDiv.className='inline-error';
+          errDiv.innerHTML='<i class="fa-solid fa-circle-exclamation"></i><span>'+data.message+'</span>';
+          document.querySelector('.form-wrap').prepend(errDiv);
+          showToast(data.message,'error');
+        }
+      }catch(err){
+        btns.forEach(b=>{b.innerHTML=b.dataset.orig;b.disabled=false;});
+        setProgress(0);
+        showToast('Network error. Please try again.','error');
+      }
     });
   </script>
 </body>
